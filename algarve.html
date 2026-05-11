@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algarve · Monty &amp; Sahil · 21–24 May 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf5e9;
+    --bg-warm: #f5ead2;
+    --bg-soft: #f9efd9;
+    --ink: #2a2118;
+    --ink-soft: #564838;
+    --muted: #8e7e68;
+    --line: rgba(86, 72, 56, 0.12);
+    --atlantic: #1a4870;
+    --atlantic-deep: #0d2e4a;
+    --terracotta: #d56b3e;
+    --terracotta-soft: #e8a47a;
+    --sun: #f3b941;
+    --sun-soft: #f9d585;
+    --bougainvillea: #c44e7a;
+    --olive: #738150;
+    --cream: #faf3e0;
+    --shadow: 0 20px 60px -20px rgba(86, 72, 56, 0.15);
+    --shadow-soft: 0 10px 30px -10px rgba(86, 72, 56, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 16px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% -10%, rgba(243, 185, 65, 0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 10% 20%, rgba(213, 107, 62, 0.08) 0%, transparent 40%),
+      radial-gradient(ellipse at 90% 80%, rgba(26, 72, 112, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  a { color: inherit; }
+
+  nav.topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(251, 245, 233, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--line);
+    z-index: 100;
+    padding: 18px 40px;
+  }
+  nav.topnav .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  nav.topnav .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  nav.topnav .brand-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sun);
+    box-shadow: 0 0 12px var(--sun);
+  }
+  nav.topnav ul {
+    display: flex;
+    list-style: none;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  nav.topnav ul a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  nav.topnav ul a:hover { color: var(--terracotta); }
+
+  @media (max-width: 920px) {
+    nav.topnav { padding: 14px 20px; }
+    nav.topnav ul { display: none; }
+  }
+
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  @media (max-width: 760px) { .wrap { padding: 0 24px; } }
+
+  .hero {
+    padding: 180px 0 120px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-sun {
+    position: absolute;
+    top: 100px;
+    right: -100px;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--sun-soft) 0%, var(--sun) 40%, transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+    filter: blur(2px);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+    padding: 8px 18px 8px 14px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+  }
+  .eyebrow .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--olive);
+    box-shadow: 0 0 0 0 var(--olive);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(115, 129, 80, 0.6); }
+    70% { box-shadow: 0 0 0 12px rgba(115, 129, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(115, 129, 80, 0); }
+  }
+
+  .hero h1 {
+    font-size: clamp(56px, 9vw, 132px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 36px;
+    max-width: 1100px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--terracotta);
+  }
+  .hero h1 .accent {
+    font-weight: 500;
+    color: var(--atlantic);
+    font-style: italic;
+  }
+  .hero .lede {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(20px, 2vw, 26px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 680px;
+    margin-bottom: 64px;
+  }
+
+  .hero-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    max-width: 1000px;
+  }
+  .hero-strip .item {
+    padding: 0 20px;
+    border-right: 1px solid var(--line);
+  }
+  .hero-strip .item:first-child { padding-left: 0; }
+  .hero-strip .item:last-child { border-right: none; }
+  .hero-strip .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .hero-strip .value {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  @media (max-width: 760px) {
+    .hero { padding: 140px 0 80px; }
+    .hero-strip { grid-template-columns: 1fr 1fr; }
+    .hero-strip .item { padding: 16px 0; border-right: none; border-bottom: 1px solid var(--line); }
+    .hero-strip .item:last-child { border-bottom: none; }
+  }
+
+  section.block {
+    padding: 120px 0;
+    position: relative;
+  }
+  section.block.dark {
+    background: var(--atlantic);
+    color: var(--cream);
+  }
+  section.block.dark h1, section.block.dark h2, section.block.dark h3, section.block.dark h4 {
+    color: var(--cream);
+  }
+  section.block.warm {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%);
+  }
+  section.block.sand { background: var(--bg-warm); }
+
+  .section-head {
+    margin-bottom: 80px;
+    max-width: 900px;
+  }
+  .section-num {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-num::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--terracotta);
+  }
+  section.block.dark .section-num { color: var(--sun); }
+  section.block.dark .section-num::before { background: var(--sun); }
+
+  .section-head h2 {
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 1.02;
+    margin-bottom: 24px;
+  }
+  .section-head h2 em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+  section.block.dark .section-head h2 em { color: var(--sun); }
+  .section-head .sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--ink-soft);
+    max-width: 720px;
+    line-height: 1.5;
+  }
+  section.block.dark .section-head .sub { color: rgba(250, 243, 224, 0.75); }
+
+  @media (max-width: 760px) {
+    section.block { padding: 80px 0; }
+    .section-head { margin-bottom: 56px; }
+  }
+
+  .gist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+  }
+  .gist-card {
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .gist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+  }
+  .gist-card .icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+  .gist-card h3 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .gist-card p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .gist-card p strong { color: var(--ink); font-weight: 600; }
+  .gist-card p mark {
+    background: var(--sun-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .venue-list { display: grid; gap: 72px; }
+  .venue {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .venue-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  section.block.dark .venue-head { border-bottom-color: rgba(250, 243, 224, 0.15); }
+
+  .venue-name {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 3.2vw, 38px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .venue-meta {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  section.block.dark .venue-meta { color: rgba(250, 243, 224, 0.6); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--sun-soft);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .pill.atlantic { background: var(--atlantic); color: var(--cream); }
+  .pill.terracotta { background: var(--terracotta); color: var(--cream); }
+  .pill.olive { background: var(--olive); color: var(--cream); }
+  .pill.bougainvillea { background: var(--bougainvillea); color: var(--cream); }
+  .pill.cream { background: var(--cream); color: var(--ink); border: 1px solid var(--line); }
+  .pill.confirmed { background: var(--olive); color: var(--cream); }
+  .pill.pending { background: var(--sun); color: var(--ink); }
+
+  .venue-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    max-width: 800px;
+  }
+  section.block.dark .venue-body { color: rgba(250, 243, 224, 0.85); }
+  .venue-body strong { color: var(--ink); font-weight: 600; }
+  section.block.dark .venue-body strong { color: var(--cream); }
+
+  .venue-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .venue-gallery { grid-template-columns: 1fr 1fr; } }
+  .venue-gallery .photo {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: 16px;
+    cursor: pointer;
+    background: var(--bg-warm);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .venue-gallery .photo:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--shadow);
+  }
+  .venue-gallery .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+  }
+  .venue-gallery .photo:hover img { transform: scale(1.08); }
+
+  .venue-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn.primary {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .btn.primary:hover {
+    background: var(--terracotta);
+    transform: translateY(-2px);
+  }
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn.secondary:hover {
+    background: var(--ink);
+    color: var(--cream);
+    transform: translateY(-2px);
+  }
+  section.block.dark .btn.primary {
+    background: var(--cream);
+    color: var(--ink);
+  }
+  section.block.dark .btn.primary:hover {
+    background: var(--sun);
+  }
+  section.block.dark .btn.secondary {
+    color: var(--cream);
+    border-color: rgba(250, 243, 224, 0.3);
+  }
+  section.block.dark .btn.secondary:hover {
+    background: var(--cream);
+    color: var(--ink);
+    border-color: var(--cream);
+  }
+  .btn::after { content: '\2192'; transition: transform 0.3s; }
+  .btn:hover::after { transform: translateX(4px); }
+
+  .flight-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+  }
+  @media (max-width: 760px) { .flight-cards { grid-template-columns: 1fr; } }
+  .flight-card {
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    border: 1px solid var(--line);
+  }
+  .flight-card .leg-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .flight-card .leg-time {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .flight-card .leg-detail {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .flight-card.out { border-left: 4px solid var(--olive); }
+  .flight-card.back { border-left: 4px solid var(--terracotta); }
+
+  .days { display: grid; gap: 48px; }
+  .day {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 28px;
+    padding: 48px;
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    height: 4px;
+    width: 80px;
+    background: linear-gradient(90deg, var(--sun), var(--terracotta));
+    border-radius: 0 0 4px 4px;
+  }
+  .day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .day-num-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 4px;
+  }
+  .day-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .day-title em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+  .day-date {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .timeline { display: grid; gap: 28px; }
+  .timeslot { display: grid; gap: 14px; }
+  .timeslot-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .timeslot-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+  .timeslot-items { display: grid; gap: 14px; }
+  .timeslot-item {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .timeslot-item:last-child { border-bottom: none; }
+  .timeslot-item .time {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--atlantic);
+  }
+  .timeslot-item .what { font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
+  .timeslot-item .what strong { color: var(--ink); font-weight: 600; }
+  .timeslot-item .cost {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--olive);
+    background: rgba(115, 129, 80, 0.08);
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .timeslot-item .cost.warm { color: var(--terracotta); background: rgba(213, 107, 62, 0.08); }
+  .timeslot-item .cost.free { color: var(--olive); background: rgba(115, 129, 80, 0.08); }
+
+  @media (max-width: 600px) {
+    .day { padding: 32px 24px; }
+    .timeslot-item { grid-template-columns: 1fr; gap: 6px; }
+    .timeslot-item .cost { justify-self: start; }
+  }
+
+  .note {
+    padding: 24px 28px;
+    border-radius: 16px;
+    background: var(--bg-soft);
+    border-left: 4px solid var(--sun);
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .note strong { color: var(--terracotta); font-weight: 600; }
+  .note.cool {
+    background: rgba(26, 72, 112, 0.06);
+    border-left-color: var(--atlantic);
+  }
+  .note.cool strong { color: var(--atlantic); }
+  section.block.dark .note {
+    background: rgba(250, 243, 224, 0.06);
+    border-left-color: var(--sun);
+    color: var(--cream);
+  }
+  section.block.dark .note strong { color: var(--sun); }
+
+  .bar-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 8px;
+  }
+  .bar-card {
+    padding: 24px;
+    background: rgba(250, 243, 224, 0.06);
+    border-radius: 16px;
+    border: 1px solid rgba(250, 243, 224, 0.1);
+  }
+  .bar-card .name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .bar-card .meta {
+    font-size: 13px;
+    color: var(--sun-soft);
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .bar-card .desc {
+    font-size: 14px;
+    color: rgba(250, 243, 224, 0.85);
+    line-height: 1.6;
+  }
+
+  .phrase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+  }
+  .phrase-card {
+    background: rgba(250, 243, 224, 0.06);
+    border-radius: 24px;
+    padding: 36px;
+    border: 1px solid rgba(250, 243, 224, 0.12);
+  }
+  .phrase-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--sun);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(250, 243, 224, 0.15);
+    font-style: italic;
+  }
+  .phrase {
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(250, 243, 224, 0.1);
+  }
+  .phrase:last-child { border-bottom: none; padding-bottom: 0; }
+  .phrase-en {
+    font-size: 13px;
+    color: rgba(250, 243, 224, 0.65);
+    margin-bottom: 6px;
+  }
+  .phrase-pt {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .phrase-pron {
+    font-size: 12px;
+    color: var(--sun-soft);
+    font-style: italic;
+  }
+
+  .translate-card {
+    background: rgba(250, 243, 224, 0.08);
+    border: 1px solid rgba(250, 243, 224, 0.12);
+    border-radius: 28px;
+    padding: 48px;
+    margin-top: 80px;
+  }
+  .translate-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .translate-card p.tw-help {
+    font-size: 15px;
+    color: rgba(250, 243, 224, 0.75);
+    margin-bottom: 32px;
+  }
+  .tw-field { margin-bottom: 16px; }
+  .tw-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sun-soft);
+    margin-bottom: 10px;
+  }
+  .tw-field textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    border: 1px solid rgba(250, 243, 224, 0.2);
+    border-radius: 16px;
+    background: rgba(13, 46, 74, 0.4);
+    color: var(--cream);
+    resize: vertical;
+  }
+  .tw-field textarea:focus {
+    outline: none;
+    border-color: var(--sun);
+    box-shadow: 0 0 0 3px rgba(243, 185, 65, 0.15);
+  }
+  .tw-direction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0;
+    padding: 14px;
+    background: rgba(13, 46, 74, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(250, 243, 224, 0.1);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(250, 243, 224, 0.75);
+  }
+  .tw-direction .arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--sun);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.4s;
+    border: none;
+    font-size: 14px;
+  }
+  .tw-direction .arrow:hover { transform: rotate(180deg); }
+  .tw-output {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(13, 46, 74, 0.4);
+    border: 1px solid rgba(250, 243, 224, 0.2);
+    min-height: 90px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--cream);
+  }
+  .tw-output.empty {
+    color: rgba(250, 243, 224, 0.5);
+    font-style: italic;
+    font-size: 15px;
+  }
+  .tw-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .tw-btn {
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(250, 243, 224, 0.3);
+    background: transparent;
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+  }
+  .tw-btn:hover { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+  .tw-btn.primary {
+    background: var(--sun);
+    color: var(--ink);
+    border-color: var(--sun);
+  }
+  .tw-btn.primary:hover { background: var(--terracotta); border-color: var(--terracotta); color: var(--cream); }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 46, 74, 0.95);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .lightbox.active { display: flex; }
+  .lb-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lb-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+  .lb-close, .lb-nav {
+    background: rgba(250, 243, 224, 0.1);
+    border: 1px solid rgba(250, 243, 224, 0.2);
+    color: var(--cream);
+    cursor: pointer;
+    transition: background 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  .lb-close {
+    position: absolute;
+    top: -56px;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 20px;
+  }
+  .lb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 18px;
+  }
+  .lb-nav:hover, .lb-close:hover { background: rgba(250, 243, 224, 0.2); }
+  .lb-prev { left: -72px; }
+  .lb-next { right: -72px; }
+  @media (max-width: 760px) {
+    .lb-prev { left: 10px; }
+    .lb-next { right: 10px; }
+  }
+  .lb-counter {
+    margin-top: 20px;
+    font-size: 13px;
+    color: rgba(250, 243, 224, 0.7);
+    text-align: center;
+  }
+
+  footer {
+    padding: 120px 0 60px;
+    background: var(--atlantic-deep);
+    color: var(--cream);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  footer::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, var(--sun) 0%, transparent 60%);
+    opacity: 0.15;
+  }
+  footer .signoff {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--sun);
+    margin-bottom: 24px;
+    position: relative;
+  }
+  footer .total-flex {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--cream);
+    margin-bottom: 20px;
+    opacity: 0.85;
+    position: relative;
+  }
+  footer .meta {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(250, 243, 224, 0.5);
+    position: relative;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero .eyebrow { animation: fadeUp 1s 0.1s both; }
+  .hero h1 { animation: fadeUp 1.2s 0.25s both; }
+  .hero .lede { animation: fadeUp 1.2s 0.45s both; }
+  .hero-strip { animation: fadeUp 1.2s 0.65s both; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a href="#top" class="brand"><span class="brand-dot"></span>Algarve &middot; May '26</a>
+    <ul>
+      <li><a href="#gist">Gist</a></li>
+      <li><a href="#stay">Stay</a></li>
+      <li><a href="#flights">Flights</a></li>
+      <li><a href="#itinerary">Days</a></li>
+      <li><a href="#wine">Calm</a></li>
+      <li><a href="#night">Lively</a></li>
+      <li><a href="#walks">Walks</a></li>
+      <li><a href="#eat">Eat</a></li>
+      <li><a href="#phrases">Phrases</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-sun"></div>
+  <div class="wrap">
+    <div class="eyebrow">
+      <span class="pulse"></span>
+      <span>Monty &amp; Sahil &middot; 21&ndash;24 May 2026</span>
+    </div>
+    <h1>Algarve, <em>al fresco</em>,<br>at <span class="accent">half pace</span>.</h1>
+    <p class="lede">Three days in Quarteira and Vilamoura &mdash; sea breeze, slow mornings, one calm wine evening and one big lively night. The flat's booked, the rest is just choosing the moments.</p>
+    <div class="hero-strip">
+      <div class="item">
+        <div class="label">Where</div>
+        <div class="value">Quarteira &middot; Vilamoura</div>
+      </div>
+      <div class="item">
+        <div class="label">Sahil arrives</div>
+        <div class="value">Thu 09:10 &middot; BRS&rarr;FAO</div>
+      </div>
+      <div class="item">
+        <div class="label">Monty wraps work</div>
+        <div class="value">Thu 13:00</div>
+      </div>
+      <div class="item">
+        <div class="label">Apartment</div>
+        <div class="value">SunnyQuarters &middot; booked</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="block warm" id="gist">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">First &mdash; the shape</div>
+      <h2>What's <em>locked</em>, what's <em>chosen</em>.</h2>
+      <p class="sub">Three nights, two themed evenings, easy walks, proper food. The shape is set &mdash; the moments are yours to pick.</p>
+    </div>
+
+    <div class="gist-grid">
+      <div class="gist-card">
+        <div class="icon">&#127968;</div>
+        <h3>The flat</h3>
+        <p><strong>SunnyQuarters</strong> on Avenida S&aacute; Carneiro &mdash; booked, paid, lockbox check-in 15:00 Thu &rarr; 10:00 Sun. <mark>&pound;119.69 each.</mark></p>
+      </div>
+      <div class="gist-card">
+        <div class="icon">&#127863;</div>
+        <h3>Friday's calm</h3>
+        <p>Pick one tasting: <strong>port</strong> at Oporto Tavern or <strong>wine</strong> at Rolha a Rolha. Then a proper Portuguese dinner with a bottle.</p>
+      </div>
+      <div class="gist-card">
+        <div class="icon">&#128375;</div>
+        <h3>Saturday's lively</h3>
+        <p>Marina bar-hop with music and a young crowd. <strong>Atlantic Bar</strong> as base; more options nearby. Or the boat-party wildcard.</p>
+      </div>
+      <div class="gist-card">
+        <div class="icon">&#129517;</div>
+        <h3>Easy walks only</h3>
+        <p>Fal&eacute;sia clifftop and the Quarteira promenade &mdash; saving the legs for your proper hiking trip later.</p>
+      </div>
+      <div class="gist-card">
+        <div class="icon">&#127963;</div>
+        <h3>Friday-only thing</h3>
+        <p><strong>Cerro da Vila Roman ruins</strong> is closed weekends. Friday morning is the only window.</p>
+      </div>
+      <div class="gist-card">
+        <div class="icon">&#9992;</div>
+        <h3>The way home</h3>
+        <p>Uber to Faro together Sunday, eat dinner inside FAO before splitting. Monty 18:55 &amp; Sahil 20:05 &mdash; both into London Gatwick, 70 min apart.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="stay">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">The place</div>
+      <h2>SunnyQuarters &middot; <em>booked</em>.</h2>
+      <p class="sub">Two bedrooms, terrace, air-con, on Quarteira's main seafront avenue. Self check-in by lockbox.</p>
+    </div>
+
+    <div class="venue-list">
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Walk-to-Beach 2BR Apartment</div>
+            <div class="venue-meta">Avenida Francisco S&aacute; Carneiro 1E &middot; Hosted by Homesbyfc &middot; Conf. HMA8NNMCQ2</div>
+          </div>
+          <span class="pill confirmed">Booked &middot; &pound;119.69 each</span>
+        </div>
+        <div class="venue-body">
+          Two bedrooms, three beds, four-guest max. Self check-in by lockbox &mdash; message Homesbyfc the day before to coordinate. House rules: quiet hours 22:00&ndash;08:00. The promenade is at your door; Vilamoura marina is a fifteen-minute walk along the seafront.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://homesbyfc.com/wp-content/uploads/2025/10/42381138026c.jpg" data-caption="The apartment"><img src="https://homesbyfc.com/wp-content/uploads/2025/10/42381138026c.jpg" alt="SunnyQuarters" loading="lazy" /></div>
+          <div class="photo" data-src="https://homesbyfc.com/wp-content/uploads/2025/10/f66360ff060b.jpg" data-caption="Bedroom"><img src="https://homesbyfc.com/wp-content/uploads/2025/10/f66360ff060b.jpg" alt="Bedroom" loading="lazy" /></div>
+          <div class="photo" data-src="https://homesbyfc.com/wp-content/uploads/2025/10/0b6038dee47e.jpg" data-caption="Living"><img src="https://homesbyfc.com/wp-content/uploads/2025/10/0b6038dee47e.jpg" alt="Living room" loading="lazy" /></div>
+          <div class="photo" data-src="https://homesbyfc.com/wp-content/uploads/2025/10/9656db926b12.jpg" data-caption="Terrace"><img src="https://homesbyfc.com/wp-content/uploads/2025/10/9656db926b12.jpg" alt="Terrace" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.airbnb.com/rooms/49208379" target="_blank" rel="noopener">View listing</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Avenida+Francisco+S%C3%A1+Carneiro+1E+Quarteira" target="_blank" rel="noopener">Open in Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block sand" id="flights">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">In and out</div>
+      <h2>The <em>flights</em>.</h2>
+      <p class="sub">Both confirmed. Sahil takes the early one from Bristol; Monty flies BA from Heathrow with the work crew.</p>
+    </div>
+
+    <div class="venue-list">
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Sahil &mdash; easyJet</div>
+            <div class="venue-meta">Bristol &harr; Faro &middot; Both legs Airbus A320 &middot; Economy</div>
+          </div>
+          <span class="pill pending">Pending</span>
+        </div>
+        <div class="flight-cards">
+          <div class="flight-card out">
+            <div class="leg-label">Out &middot; Thu 21 May</div>
+            <div class="leg-time">06:30 BRS &rarr; 09:10 FAO</div>
+            <div class="leg-detail">U2 2873 &middot; 2h 40m &middot; Direct</div>
+          </div>
+          <div class="flight-card back">
+            <div class="leg-label">Back &middot; Sun 24 May</div>
+            <div class="leg-time">20:05 FAO &rarr; 22:55 LGW</div>
+            <div class="leg-detail">U2 8538 &middot; 2h 50m &middot; Direct to Gatwick</div>
+          </div>
+        </div>
+        <div class="venue-body" style="margin-top: 8px;">
+          Out of Bristol, back into Gatwick. Different outbound airport from Monty (LGW), same return airport. Sort transport from Gatwick home in advance.
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Monty &mdash; British Airways</div>
+            <div class="venue-meta">London Gatwick &harr; Faro &middot; With the work crew on the outbound</div>
+          </div>
+          <span class="pill confirmed">Confirmed</span>
+        </div>
+        <div class="flight-cards">
+          <div class="flight-card out">
+            <div class="leg-label">Out &middot; Tue 19 May</div>
+            <div class="leg-time">LGW &rarr; 11:50 FAO</div>
+            <div class="leg-detail">BA2660 &middot; Hyatt Tue/Wed with work</div>
+          </div>
+          <div class="flight-card back">
+            <div class="leg-label">Back &middot; Sun 24 May</div>
+            <div class="leg-time">18:55 FAO &rarr; LGW</div>
+            <div class="leg-detail">BA2663 &middot; arrive Gatwick ~21:55</div>
+          </div>
+        </div>
+        <div class="venue-body" style="margin-top: 8px;">
+          Already there with work Tue/Wed. <strong>Thursday 13:00 work wraps</strong>, then it's a real duo holiday.
+        </div>
+      </div>
+    </div>
+
+    <div class="note cool" style="margin-top: 56px;">
+      <strong>Sunday plan:</strong> Uber together to Faro Airport around 15:00 (~&euro;25 split, &euro;12.50 each). Sit-down dinner inside FAO landside, then split for your flights. ~70 minutes between gates.
+    </div>
+  </div>
+</section>
+
+<section class="block warm" id="itinerary">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">Day by day</div>
+      <h2>The <em>shape</em> of the days.</h2>
+      <p class="sub">Leisure-tilted. No forced marches. Two big themed evenings; days for sun, sea and slow food.</p>
+    </div>
+
+    <div class="days">
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-num-label">Day 01</div>
+            <div class="day-title">Settle in, <em>soft launch</em></div>
+          </div>
+          <div class="day-date">Thursday &middot; 21 May</div>
+        </div>
+        <div class="timeline">
+          <div class="timeslot">
+            <div class="timeslot-label">Morning &middot; Sahil arrives, Monty wraps work</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">06:30</span><span class="what"><strong>Sahil</strong> takes off from Bristol (U2 2873).</span><span></span></div>
+              <div class="timeslot-item"><span class="time">09:10</span><span class="what"><strong>Sahil lands at Faro.</strong> Coffee + nata at arrivals.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">10:00</span><span class="what"><strong>Faro &rarr; Quarteira:</strong> Bus 55 (~30 min) or Uber/Bolt (~25 min).</span><span class="cost">&euro;5&ndash;20</span></div>
+              <div class="timeslot-item"><span class="time">11:00</span><span class="what">Bag drop at a beach caf&eacute;, light breakfast, slow start.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">11:30</span><span class="what">Solo Sahil window &mdash; Quarteira beach + promenade walk, beer in the sun.</span><span class="cost">&euro;10&ndash;15</span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Afternoon &middot; together from 13:00</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">13:00</span><span class="what"><strong>Monty wraps work</strong> and meets Sahil. Lunch together at <strong>Sailor's Corner</strong>.</span><span class="cost">&euro;15&ndash;20 each</span></div>
+              <div class="timeslot-item"><span class="time">14:30</span><span class="what">Slow afternoon on Quarteira beach or near the apartment.</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">15:00</span><span class="what"><strong>Lockbox check-in</strong> at SunnyQuarters. Shower, balcony beer.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">16:30</span><span class="what">Pingo Doce run for the week &mdash; breakfast, wine, water.</span><span class="cost">&euro;15&ndash;20 split</span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Evening &middot; first night together, easy</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">18:30</span><span class="what">Sunset stroll along the promenade.</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">20:00</span><span class="what">Dinner: <strong>Restaurante Tico Tico</strong> in Quarteira backstreets. Traditional, family-run.</span><span class="cost">&euro;30&ndash;40 split</span></div>
+              <div class="timeslot-item"><span class="time">22:00</span><span class="what">Sagres on the balcony. Sahil's been up since 04:00 &mdash; early to bed.</span><span class="cost">&euro;6</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-num-label">Day 02</div>
+            <div class="day-title">Roman ruins, <em>wine or port</em></div>
+          </div>
+          <div class="day-date">Friday &middot; 22 May</div>
+        </div>
+        <div class="timeline">
+          <div class="timeslot">
+            <div class="timeslot-label">Late morning &middot; culture window</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">09:30</span><span class="what">Breakfast at home &mdash; past&eacute;is de nata + coffee from Pingo Doce.</span><span class="cost">&euro;4 split</span></div>
+              <div class="timeslot-item"><span class="time">10:30</span><span class="what">Walk along the promenade to Vilamoura marina (15 min, flat, scenic).</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">11:00</span><span class="what"><strong>Cerro da Vila Roman Ruins.</strong> Mosaics, fish-salting tanks. 60&ndash;90 min. <em>Mon&ndash;Fri only &mdash; this is the window.</em></span><span class="cost">&euro;4 each</span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Afternoon &middot; leisure</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">13:00</span><span class="what">Lunch at the marina &mdash; <strong>Snack-bar Monteiro's</strong> or back to Quarteira for prato do dia.</span><span class="cost">&euro;20&ndash;25 split</span></div>
+              <div class="timeslot-item"><span class="time">14:30</span><span class="what">Beach / pool / balcony. Slow afternoon.</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">16:30</span><span class="what">Reset at the apartment before the evening.</span><span></span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Evening &middot; the calm night, your pick</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">18:00</span><span class="what"><strong>Option A &mdash; Port at Oporto Tavern</strong> (Vilamoura). Bruno lines up 3&ndash;4 ports at the bar with tapas.</span><span class="cost">&euro;25&ndash;35 each</span></div>
+              <div class="timeslot-item"><span class="time">&mdash; OR &mdash;</span><span class="what"><strong>Option B &mdash; Wine at Rolha a Rolha</strong> (Quarteira, 5 min away). Structured 2hr tasting of 7 Portuguese wines.</span><span class="cost">&euro;25&ndash;30 each</span></div>
+              <div class="timeslot-item"><span class="time">20:30</span><span class="what">Dinner at <strong>Casa do Pescador</strong> (Portuguese seafood) or <strong>Akvavit</strong> (Scandi-Portuguese). Bottle of Algarve red.</span><span class="cost warm">&euro;30&ndash;40 each</span></div>
+              <div class="timeslot-item"><span class="time">23:00</span><span class="what">Walk home along the promenade. Terrace nightcap.</span><span class="cost">&euro;8 split</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-num-label">Day 03</div>
+            <div class="day-title">Loul&eacute; market, <em>big night out</em></div>
+          </div>
+          <div class="day-date">Saturday &middot; 23 May</div>
+        </div>
+        <div class="timeline">
+          <div class="timeslot">
+            <div class="timeslot-label">Morning &middot; Loul&eacute;</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">08:30</span><span class="what">Apartment breakfast. Easy start.</span><span class="cost">&euro;4 split</span></div>
+              <div class="timeslot-item"><span class="time">09:15</span><span class="what">Walk to Quarteira bus station (5 min).</span><span></span></div>
+              <div class="timeslot-item"><span class="time">09:30</span><span class="what"><strong>Vamus Bus 9</strong> Quarteira &rarr; Loul&eacute; (~25 min). Buy via Vamus app.</span><span class="cost">&euro;7 split</span></div>
+              <div class="timeslot-item"><span class="time">10:00</span><span class="what"><strong>Mercado Municipal de Loul&eacute;</strong> &mdash; Moorish-domed market hall plus Saturday farmers' and gypsy markets.</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">11:30</span><span class="what">Loul&eacute; Castle &amp; Archaeological Museum. Wander old town.</span><span class="cost">&euro;3.20 split</span></div>
+              <div class="timeslot-item"><span class="time">12:30</span><span class="what">Petiscos lunch at market stalls &mdash; grilled sausages, prawns, folhado de Loul&eacute; pastry.</span><span class="cost">&euro;20&ndash;25 split</span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Afternoon &middot; back to base</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">14:30</span><span class="what">Bus 9 back to Quarteira.</span><span class="cost">&euro;7 split</span></div>
+              <div class="timeslot-item"><span class="time">15:30</span><span class="what">Beach / balcony / proper afternoon nap. Rest for the night.</span><span class="cost free">free</span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Evening &middot; the lively night (pick your energy)</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">19:30</span><span class="what">Dinner at <strong>Salmora Live Kitchen</strong> &mdash; modern Portuguese tapas, open kitchen, shared plates.</span><span class="cost warm">&euro;25&ndash;35 each</span></div>
+              <div class="timeslot-item"><span class="time">21:30</span><span class="what"><strong>Atlantic Bar</strong> &mdash; live band + DJ later, marina-side. The reliable opener.</span><span class="cost">&euro;15&ndash;20 each</span></div>
+              <div class="timeslot-item"><span class="time">22:30</span><span class="what">Bar-hop the marina &mdash; <strong>O'Neills</strong> for live music, <strong>Cats Bar</strong> for DJ sets, <strong>M&ouml;TAO</strong> for a younger, stylier crowd.</span><span class="cost">&euro;20&ndash;30 each</span></div>
+              <div class="timeslot-item"><span class="time">00:30</span><span class="what"><strong>Escalation if up for it:</strong> taxi to <strong>Kadoc Disco</strong> for proper late dancing till 7am.</span><span class="cost warm">&euro;25&ndash;30 each</span></div>
+              <div class="timeslot-item"><span class="time">&mdash; OR &mdash;</span><span class="what"><strong>Wildcard:</strong> book the <strong>Sunset Boat Party with DJ</strong> earlier (18:00 dep), then dinner, then Atlantic Bar.</span><span class="cost warm">&euro;35&ndash;45 each</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <div class="day-num-label">Day 04</div>
+            <div class="day-title">Soft out, <em>airport dinner</em></div>
+          </div>
+          <div class="day-date">Sunday &middot; 24 May</div>
+        </div>
+        <div class="timeline">
+          <div class="timeslot">
+            <div class="timeslot-label">Morning &middot; out by 10:00</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">08:30</span><span class="what">Apartment breakfast. Pack.</span><span class="cost">&euro;4 split</span></div>
+              <div class="timeslot-item"><span class="time">10:00</span><span class="what"><strong>Check out.</strong> Store bags at a Quarteira caf&eacute;.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">10:30</span><span class="what">Final stroll: <strong>Quarteira fish market</strong>. Authentic, free.</span><span class="cost free">free</span></div>
+              <div class="timeslot-item"><span class="time">12:00</span><span class="what">Lunch / brunch at <strong>Sailor's Corner</strong>. Last Sagres in the sun.</span><span class="cost">&euro;12&ndash;18 each</span></div>
+              <div class="timeslot-item"><span class="time">14:00</span><span class="what">Pick up bags. Beach sit or terrace coffee before transit.</span><span></span></div>
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Transfer &middot; Uber to Faro together</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">15:00</span><span class="what"><strong>Uber/Bolt to Faro Airport</strong> (~25 min). Both at FAO by 15:30.</span><span class="cost">&euro;12.50 each</span></div>
+              <div class="timeslot-item"><span class="time">15:45</span><span class="what"><strong>Dinner together inside FAO landside.</strong> Areias Cafetaria or O Vag&atilde;o &mdash; proper Portuguese sit-down, not just airport fast food.</span><span class="cost warm">&euro;15&ndash;20 each</span></div>
+            </div>
+            <div class="note cool" style="margin-top: 16px;">
+              <strong>Bus backup:</strong> If you'd rather save the Uber money, <strong>Vamus Bus 55 at 14:30</strong> goes Vilamoura &rarr; Faro Airport in 30 min for &euro;5.20 each. Sunday departures are limited &mdash; the 14:30 is the one. Walk to the Vilamoura stop or take a quick local Uber to it.
+            </div>
+          </div>
+          <div class="timeslot">
+            <div class="timeslot-label">Evening &middot; flights home</div>
+            <div class="timeslot-items">
+              <div class="timeslot-item"><span class="time">17:00</span><span class="what"><strong>Monty</strong> through security (BA gates open ~90 min before).</span><span></span></div>
+              <div class="timeslot-item"><span class="time">18:00</span><span class="what">Sahil heads through security or finishes a final coffee.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">18:55</span><span class="what"><strong>Monty: BA2663 &rarr; London Gatwick.</strong> Arrives LGW ~21:55.</span><span></span></div>
+              <div class="timeslot-item"><span class="time">20:05</span><span class="what"><strong>Sahil: U2 8538 &rarr; London Gatwick.</strong> Arrives LGW ~22:55.</span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="block" id="wine">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">Friday's mood</div>
+      <h2>The <em>calm night</em> &mdash; port or wine.</h2>
+      <p class="sub">Pick one tasting venue, then a proper Portuguese dinner with a bottle. No need to do both.</p>
+    </div>
+
+    <div class="venue-list">
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Oporto Tavern</div>
+            <div class="venue-meta">Wine &amp; cocktail bar &middot; Vilamoura marina &middot; 17:00&ndash;02:00</div>
+          </div>
+          <span class="pill bougainvillea">Port option</span>
+        </div>
+        <div class="venue-body">
+          The port answer. Bruno and the team run an informal port flight at the bar &mdash; they line up 3&ndash;5 ports based on what you like, talk through each one, pair with tapas cooked on the bar in some sittings. Weekday happy hour (17:00&ndash;19:30) is the quietest window with most bartender attention. Open till 02:00 if you want to stay.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/3e/f8/a6/out-doors-area.jpg?w=1200" data-caption="Outdoor seating"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/3e/f8/a6/out-doors-area.jpg?w=600" alt="Oporto Tavern outdoor" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/3e/f7/df/lounge-area.jpg?w=1200" data-caption="Lounge interior"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/3e/f7/df/lounge-area.jpg?w=600" alt="Oporto Tavern lounge" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/4e/b6/bf/vintage-port-wine.jpg?w=1200" data-caption="Vintage port selection"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/4e/b6/bf/vintage-port-wine.jpg?w=600" alt="Port wine" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/91/e6/80/nice-and-cosy-atmosphere.jpg?w=1200" data-caption="Cosy atmosphere"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/91/e6/80/nice-and-cosy-atmosphere.jpg?w=600" alt="Cosy bar" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.instagram.com/oportotavernwinebar/" target="_blank" rel="noopener">DM to book</a>
+          <a class="btn secondary" href="https://www.tripadvisor.com/Attraction_Review-g227947-d12598274-Reviews-Oporto_Tavern_Wine_Cocktail_Bar-Vilamoura_Quarteira_Faro_District_Algarve.html" target="_blank" rel="noopener">Reviews</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Oporto+Tavern+Wine+Cocktail+Bar+Vilamoura" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Rolha a Rolha</div>
+            <div class="venue-meta">Wine shop &amp; tastings &middot; Quarteira (S&aacute; Carneiro area) &middot; 5 min from apartment</div>
+          </div>
+          <span class="pill atlantic">Wine option</span>
+        </div>
+        <div class="venue-body">
+          The wine alternative. A newer Quarteira wine shop running structured two-hour Portuguese wine tastings &mdash; seven wines, walked through by variety and region. More formal sit-down vibe than Oporto Tavern, and you don't have to leave Quarteira. Book a day or two ahead.
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Rolha+a+Rolha+Quarteira" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="night">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">Saturday's mood</div>
+      <h2>The <em>lively night</em> &mdash; bars, music, dance.</h2>
+      <p class="sub">A marina full of options. Start at Atlantic, see how the night goes &mdash; bar-hop, escalate to a club, or take the wildcard boat-party route.</p>
+    </div>
+
+    <div class="venue-list">
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Atlantic Bar</div>
+            <div class="venue-meta">Vilamoura marina &middot; Live music + DJ &middot; Year-round &middot; Open till 02:00</div>
+          </div>
+          <span class="pill">Base camp</span>
+        </div>
+        <div class="venue-body">
+          The reliable opener. Live music venue first &mdash; bands from across Portugal, UK guests, transitions to live DJ later. Marina-side, mixed-but-younger crowd, no aggressive door. Cocktails around &euro;8&ndash;10. White baby grand piano in the corner, energetic without being a club. Good place to start the night and feel out the vibe.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/73/62/4e/atlantic-live-music-bar.jpg?w=1200" data-caption="Live music stage"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/73/62/4e/atlantic-live-music-bar.jpg?w=600" alt="Atlantic Bar live music" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/7d/56/e9/atlantic-bar.jpg?w=1200" data-caption="Bar interior"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/7d/56/e9/atlantic-bar.jpg?w=600" alt="Atlantic Bar interior" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/73/1f/c0/atlantic-bar.jpg?w=1200" data-caption="Piano bar corner"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/73/1f/c0/atlantic-bar.jpg?w=600" alt="Piano bar" loading="lazy" /></div>
+          <div class="photo" data-src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/17/19/4e/atlantic-bar.jpg?w=1200" data-caption="Marina view"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/17/19/4e/atlantic-bar.jpg?w=600" alt="Marina view" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.tripadvisor.com/Attraction_Review-g227947-d6351967-Reviews-Atlantic_Bar-Vilamoura_Quarteira_Faro_District_Algarve.html" target="_blank" rel="noopener">Reviews</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Atlantic+Bar+Vilamoura+Marina" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">If you change your mind</div>
+            <div class="venue-meta">Marina bar-hop alternatives &middot; Young, music-led, all walkable from Atlantic</div>
+          </div>
+          <span class="pill cream">Mix &amp; match</span>
+        </div>
+        <div class="venue-body">
+          Three more marina bars worth knowing about, all within a few minutes of Atlantic. Drop in for one drink each, find the one with the right energy on the night, settle in there.
+        </div>
+        <div class="bar-cards">
+          <div class="bar-card">
+            <div class="name">Cats Bar</div>
+            <div class="meta">Av. da Marina 22 &middot; Live DJ sets &middot; Lively crowd</div>
+            <div class="desc">Marina nightspot with regular DJs on weekends, casual-stylish crowd, marina views. Arrive a bit early for a seat. House cocktails are the order to make.</div>
+          </div>
+
+          <div class="bar-card">
+            <div class="name">MöTAO Vilamoura</div>
+            <div class="meta">Marina · Trendy · Asian-inspired bar &amp; lounge</div>
+            <div class="desc">Newer Vilamoura entrant — stylish décor, beach atmosphere, indoor and outdoor zones, attracts a younger and trendier crowd than the older Irish pubs. Good cocktails, lounge vibe.</div>
+          </div>
+          <div class="bar-card">
+            <div class="name">O'Neills Irish Pub</div>
+            <div class="meta">Marina front · Live music every night · Marina terrace</div>
+            <div class="desc">If the brief is "live band, energetic crowd, decent pints" — this is the simple answer. Live music every night, marina-overlooking terrace, pool table inside, lively without being a nightclub. Gets crowded; service can slow.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Kadoc Disco</div>
+            <div class="venue-meta">Estrada de Vilamoura, Boliqueime · 10-min taxi · Year-round · Till 07:00</div>
+          </div>
+          <span class="pill terracotta">Late escalation</span>
+        </div>
+        <div class="venue-body">
+          The Algarve's biggest superclub — 7,000 capacity, five dance floors, open-air terrace, year-round (Bliss is summer-only, Lick has bad reviews). Mixed-age crowd, less attitude than the smaller clubs. €10–15 entry plus taxi. Best as a 01:00+ escalation after a couple of marina bars, not first stop.
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Kadoc+Vilamoura" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Sunset Boat Party</div>
+            <div class="venue-meta">Vilamoura marina · 2 hours · Open bar first hour · €35–45 each</div>
+          </div>
+          <span class="pill olive">Wildcard</span>
+        </div>
+        <div class="venue-body">
+          A 2-hour boat party along the coast at sunset — live DJ, open bar first hour (beer, sangria, soft drinks), dance deck. Solves the "no real club in late May" question by making the boat the party. Departs Vilamoura ~18:00, back ~20:00. Then dinner, then Atlantic Bar to keep it going. Book ahead via GetYourGuide or SeaBookings.
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.getyourguide.com/vilamoura-l35927/vilamoura-sunset-boat-party-with-dj-and-open-bar-t1207919/" target="_blank" rel="noopener">Book on GetYourGuide</a>
+          <a class="btn secondary" href="https://www.seabookings.com/experience/sunset-boat-party-vilamoura/" target="_blank" rel="noopener">SeaBookings</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note" style="margin-top: 56px;">
+      <strong>What we're skipping:</strong> Bliss is closed (July–August only). Lick gets aggressive bouncer / €5-water-bottle reviews. Disco Dice has sticky floors. Stick to Atlantic Bar plus a marina bar-hop, with Kadoc as the late option or the boat party as a wildcard.
+    </div>
+  </div>
+</section>
+
+<!-- WALKS -->
+<section class="block sand" id="walks">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">Daytime moves</div>
+      <h2>Easy <em>walks</em> &amp; the daytime.</h2>
+      <p class="sub">Gentle stuff only — the proper hiking trip's coming later.</p>
+    </div>
+
+    <div class="venue-list">
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Praia da Falésia clifftop walk</div>
+            <div class="venue-meta">From Vilamoura marina · Free · 60–90 min there-and-back</div>
+          </div>
+          <span class="pill">Easy walk</span>
+        </div>
+        <div class="venue-body">
+          Iconic Algarve orange cliffs with pine trees. Start near the eastern end of Praia da Rocha Baixinha. Hour out, hour back — gentle clifftop path with viewpoints all along. Trainers, water, sunscreen. Cliff edges crumble; stay back from the lip.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Praia_da_Fal%C3%A9sia_%285514170609%29.jpg/1280px-Praia_da_Fal%C3%A9sia_%285514170609%29.jpg" data-caption="Orange cliffs"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Praia_da_Fal%C3%A9sia_%285514170609%29.jpg/640px-Praia_da_Fal%C3%A9sia_%285514170609%29.jpg" alt="Praia da Falésia" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%281%29.JPG/1280px-11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%281%29.JPG" data-caption="Clifftop pines"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%281%29.JPG/640px-11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%281%29.JPG" alt="Clifftop pines" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%283%29.JPG/1280px-11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%283%29.JPG" data-caption="Beach below"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%283%29.JPG/640px-11_November_2016%2C_Praia_da_Fal%C3%A9sia%2C_Olhos_de_%C3%81gua_%283%29.JPG" alt="Beach below" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Falesia_Beach_seen_from_sea.JPG/1280px-Falesia_Beach_seen_from_sea.JPG" data-caption="From the sea"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Falesia_Beach_seen_from_sea.JPG/640px-Falesia_Beach_seen_from_sea.JPG" alt="Falesia from sea" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Praia+da+Falesia+trail+start" target="_blank" rel="noopener">Trail start</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Cerro da Vila Roman Ruins</div>
+            <div class="venue-meta">Near Vilamoura marina · €4 each · Mon–Fri 09:30–12:30 / 14:00–18:00</div>
+          </div>
+          <span class="pill terracotta">Friday only</span>
+        </div>
+        <div class="venue-body">
+          A real Roman villa with mosaics, fish-salting tanks and a small museum. Walking distance from the marina. <strong>Closed Saturday and Sunday</strong> — Friday is your only window on this trip. Allow 60–90 minutes. Properly interesting culture hit for €4.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Ru%C3%ADnas_romanas_do_Cerro_da_Vila_-_Quarteira_%2848051628518%29.jpg/1280px-Ru%C3%ADnas_romanas_do_Cerro_da_Vila_-_Quarteira_%2848051628518%29.jpg" data-caption="Roman ruins"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Ru%C3%ADnas_romanas_do_Cerro_da_Vila_-_Quarteira_%2848051628518%29.jpg/640px-Ru%C3%ADnas_romanas_do_Cerro_da_Vila_-_Quarteira_%2848051628518%29.jpg" alt="Cerro da Vila" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG/1280px-Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG" data-caption="Site overview"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG/640px-Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG" alt="Roman ruins" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Remnants_of_the_villa_walls%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG/1280px-Remnants_of_the_villa_walls%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG" data-caption="Villa walls"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Remnants_of_the_villa_walls%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG/640px-Remnants_of_the_villa_walls%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG" alt="Villa walls" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Caldarium_e_tepidarium%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG/1280px-Caldarium_e_tepidarium%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG" data-caption="Roman baths"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Caldarium_e_tepidarium%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG/640px-Caldarium_e_tepidarium%2C_Ru%C3%ADnas_romanas_do_Cerro_da_Vila%2C_20_October_2016.JPG" alt="Roman baths" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Cerro+da+Vila+Roman+Ruins" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Loulé Saturday Market</div>
+            <div class="venue-meta">Mercado Municipal · Saturday only · Bus 9 from Quarteira</div>
+          </div>
+          <span class="pill bougainvillea">Saturday morning</span>
+        </div>
+        <div class="venue-body">
+          The famous Moorish red-domed market hall with farmers' and gypsy markets spilling around it on Saturdays. Live music inside the hall. Petiscos at the stalls for lunch (~€10–12). Loulé castle and old town wander combine perfectly. Bus 9 from Quarteira, ~25 min, €3.50 each via Vamus app.
+        </div>
+        <div class="venue-gallery">
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mercado_Municipal_de_Loul%C3%A9%2C_Algarve%2C_Portugal.JPG/1280px-Mercado_Municipal_de_Loul%C3%A9%2C_Algarve%2C_Portugal.JPG" data-caption="Moorish dome exterior"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mercado_Municipal_de_Loul%C3%A9%2C_Algarve%2C_Portugal.JPG/640px-Mercado_Municipal_de_Loul%C3%A9%2C_Algarve%2C_Portugal.JPG" alt="Loulé market" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/24-07-2017_Municipal_Market%2C_Loul%C3%A9.JPG/1280px-24-07-2017_Municipal_Market%2C_Loul%C3%A9.JPG" data-caption="Market interior"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/24-07-2017_Municipal_Market%2C_Loul%C3%A9.JPG/640px-24-07-2017_Municipal_Market%2C_Loul%C3%A9.JPG" alt="Market stalls" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Loule_%28Portugal%29_%2849832763571%29.jpg/1280px-Loule_%28Portugal%29_%2849832763571%29.jpg" data-caption="Wide exterior"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Loule_%28Portugal%29_%2849832763571%29.jpg/640px-Loule_%28Portugal%29_%2849832763571%29.jpg" alt="Loulé exterior" loading="lazy" /></div>
+          <div class="photo" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Loule_%28Portugal%29_%2850405763761%29.jpg/1280px-Loule_%28Portugal%29_%2850405763761%29.jpg" data-caption="Market day streets"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Loule_%28Portugal%29_%2850405763761%29.jpg/640px-Loule_%28Portugal%29_%2850405763761%29.jpg" alt="Market day" loading="lazy" /></div>
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Mercado+Municipal+de+Loule" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Quarteira seafront promenade</div>
+            <div class="venue-meta">Calçadão de Quarteira · Free · Flat 2km between apartment and marina</div>
+          </div>
+          <span class="pill">Easy walk</span>
+        </div>
+        <div class="venue-body">
+          The Calçadão. Palm-lined paved promenade between your apartment and Vilamoura marina — easy, flat, scenic. At the eastern end: Quarteira's working fish port and morning fish market, gritty and authentic and free.
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Calcadao+de+Quarteira" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EAT -->
+<section class="block warm" id="eat">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">Where to eat</div>
+      <h2>Three <em>dinners</em>, three moods.</h2>
+      <p class="sub">Thursday's easy, Friday's traditional, Saturday's modern shared plates. Plus the market lunch in Loulé.</p>
+    </div>
+
+    <div class="venue-list">
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Casa do Pescador</div>
+            <div class="venue-meta">Just behind Vilamoura marina · Mains €15–25 · Traditional Portuguese</div>
+          </div>
+          <span class="pill">Friday night</span>
+        </div>
+        <div class="venue-body">
+          Friday's dinner. Traditional seafood and steak, hidden square behind the marina, generous portions. Famous for cataplana — a copper-pot Portuguese fish stew you split between two. Book ahead for Friday/Saturday. ~€30–40 each with a bottle of wine.
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.google.com/maps/search/?api=1&query=Casa+do+Pescador+Vilamoura" target="_blank" rel="noopener">Find on Maps</a>
+          <a class="btn secondary" href="https://www.tripadvisor.com/Restaurant_Review-g227947-d739874-Reviews-Casa_do_Pescador-Vilamoura_Quarteira_Faro_District_Algarve.html" target="_blank" rel="noopener">Reviews</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Salmora Live Kitchen &amp; Bar</div>
+            <div class="venue-meta">Just off marina · Sharing menu from €6.75 · Modern Portuguese tapas</div>
+          </div>
+          <span class="pill bougainvillea">Saturday night</span>
+        </div>
+        <div class="venue-body">
+          Saturday's dinner. Modern Portuguese tapas, open kitchen, social bar seating — perfect for two splitting plates. Order six to eight small plates between you (mushroom risotto, gyozas, baby squid, mini-burgers). ~€30–40 each with cocktails. <strong>Book ahead for Saturday.</strong>
+        </div>
+        <div class="venue-actions">
+          <a class="btn primary" href="https://www.google.com/maps/search/?api=1&query=Salmora+Live+Kitchen+Vilamoura" target="_blank" rel="noopener">Find on Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Akvavit</div>
+            <div class="venue-meta">Vilamoura marina-front · Mains €18–29 · Scandi-Portuguese since 1990</div>
+          </div>
+          <span class="pill atlantic">Alternative</span>
+        </div>
+        <div class="venue-body">
+          Iconic marina-front restaurant. Swedish-Portuguese fusion (grilled tiger prawns, cataplana, lamb chops). Marina-deck terrace, good Portuguese wine list. Smart-casual. Swap into Friday or Saturday if Casa do Pescador or Salmora is fully booked.
+        </div>
+        <div class="venue-actions">
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Akvavit+Restaurant+Vilamoura" target="_blank" rel="noopener">Maps</a>
+        </div>
+      </div>
+
+      <div class="venue">
+        <div class="venue-head">
+          <div>
+            <div class="venue-name">Quarteira backstreets</div>
+            <div class="venue-meta">For Thursday's dinner and Sunday lunch</div>
+          </div>
+          <span class="pill">Local</span>
+        </div>
+        <div class="venue-body">
+          The backstreets a few rows behind the seafront have the best-value Portuguese cooking. <strong>Restaurante Tico Tico</strong> for traditional family-run dinner — Thursday's pick. <strong>Sailor's Corner</strong> for the lighter Sunday lunch with a final beer. <strong>Rei do Churrasco</strong> for Madeiran-style grilled chicken if you want something quick. <strong>Marisqueira Sol e Mar</strong> for local fish — ask the price per kilo before ordering.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PHRASES -->
+<section class="block dark" id="phrases">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">A little Portuguese</div>
+      <h2>Phrases worth <em>knowing</em>.</h2>
+      <p class="sub">European Portuguese pronunciation. Practice <em>obrigado</em>. It'll get you warmer service all week.</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <h3>Basics &amp; courtesy</h3>
+        <div class="phrase">
+          <div class="phrase-en">Hello / Good morning</div>
+          <div class="phrase-pt">Olá / Bom dia</div>
+          <div class="phrase-pron">oh-LA / bom DEE-ah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Good afternoon / evening</div>
+          <div class="phrase-pt">Boa tarde / Boa noite</div>
+          <div class="phrase-pron">BOH-ah TAR-deh / BOH-ah NOY-cheh</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Please</div>
+          <div class="phrase-pt">Por favor</div>
+          <div class="phrase-pron">por fa-VOR</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Thank you (m / f speaker)</div>
+          <div class="phrase-pt">Obrigado / Obrigada</div>
+          <div class="phrase-pron">oh-bree-GA-doo / oh-bree-GA-dah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Cheers!</div>
+          <div class="phrase-pt">Saúde!</div>
+          <div class="phrase-pron">sah-OO-deh</div>
+        </div>
+      </div>
+
+      <div class="phrase-card">
+        <h3>Cafés (coffee &amp; nata)</h3>
+        <div class="phrase">
+          <div class="phrase-en">One espresso, please</div>
+          <div class="phrase-pt">Um café, por favor</div>
+          <div class="phrase-pron">oom kaf-EH</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Two espressos</div>
+          <div class="phrase-pt">Dois cafés, por favor</div>
+          <div class="phrase-pron">doysh kaf-EHSH</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">One nata, please</div>
+          <div class="phrase-pt">Um pastel de nata, por favor</div>
+          <div class="phrase-pron">oom pash-TEL deh NAH-tah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">An espresso AND a nata</div>
+          <div class="phrase-pt">Um café e um pastel de nata</div>
+          <div class="phrase-pron">oom kaf-EH ee oom pash-TEL</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Two of each (coffee + nata)</div>
+          <div class="phrase-pt">Dois cafés e dois pastéis de nata</div>
+          <div class="phrase-pron">doysh kaf-EHSH ee doysh pash-TAYSH</div>
+        </div>
+      </div>
+
+      <div class="phrase-card">
+        <h3>Restaurants</h3>
+        <div class="phrase">
+          <div class="phrase-en">Table for two, please</div>
+          <div class="phrase-pt">Uma mesa para dois, por favor</div>
+          <div class="phrase-pron">OO-mah MAY-zah pra doysh</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Menu in English?</div>
+          <div class="phrase-pt">Tem ementa em inglês?</div>
+          <div class="phrase-pron">tayng eh-MEN-tah ayng een-GLAYSH</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">What do you recommend?</div>
+          <div class="phrase-pt">O que recomenda?</div>
+          <div class="phrase-pron">oo keh reh-koh-MEN-dah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">No bread/olives please (couvert isn't free)</div>
+          <div class="phrase-pt">Não quero o couvert, obrigado</div>
+          <div class="phrase-pron">nown KEH-roo oo koo-VAIR</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">The bill, please</div>
+          <div class="phrase-pt">A conta, por favor</div>
+          <div class="phrase-pron">ah KON-tah</div>
+        </div>
+      </div>
+
+      <div class="phrase-card">
+        <h3>Drinks &amp; bars</h3>
+        <div class="phrase">
+          <div class="phrase-en">Two beers, please</div>
+          <div class="phrase-pt">Duas cervejas, por favor</div>
+          <div class="phrase-pron">DOO-ash ser-VAY-zhash</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">A small draft beer</div>
+          <div class="phrase-pt">Uma imperial</div>
+          <div class="phrase-pron">OO-mah eem-pair-ee-AHL</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">A bottle of Algarve red</div>
+          <div class="phrase-pt">Uma garrafa de tinto do Algarve</div>
+          <div class="phrase-pron">OO-mah ga-RAH-fah deh TEEN-too doo al-GAR-veh</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">A port wine, please</div>
+          <div class="phrase-pt">Um vinho do Porto, por favor</div>
+          <div class="phrase-pron">oom VEE-nyoo doo POR-too</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">What's your house wine?</div>
+          <div class="phrase-pt">Qual é o vinho da casa?</div>
+          <div class="phrase-pron">kwal eh oo VEE-nyoo dah KAH-zah</div>
+        </div>
+      </div>
+
+      <div class="phrase-card">
+        <h3>Getting around</h3>
+        <div class="phrase">
+          <div class="phrase-en">Where is...?</div>
+          <div class="phrase-pt">Onde fica...?</div>
+          <div class="phrase-pron">ON-deh FEE-kah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">The bathroom</div>
+          <div class="phrase-pt">A casa de banho</div>
+          <div class="phrase-pron">ah KAH-zah deh BAH-nyoo</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Two tickets to Loulé</div>
+          <div class="phrase-pt">Dois bilhetes para Loulé</div>
+          <div class="phrase-pron">doysh bee-LYEH-tesh pra loo-LEH</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">How much is it?</div>
+          <div class="phrase-pt">Quanto custa?</div>
+          <div class="phrase-pron">KWAN-too KOOSH-tah</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Do you speak English?</div>
+          <div class="phrase-pt">Fala inglês?</div>
+          <div class="phrase-pron">FA-lah een-GLAYSH</div>
+        </div>
+      </div>
+
+      <div class="phrase-card">
+        <h3>Useful + emergencies</h3>
+        <div class="phrase">
+          <div class="phrase-en">I don't understand</div>
+          <div class="phrase-pt">Não compreendo</div>
+          <div class="phrase-pron">nown kom-pree-EN-doo</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Slower, please?</div>
+          <div class="phrase-pt">Pode falar mais devagar?</div>
+          <div class="phrase-pron">POH-deh fa-LAR mysh deh-vah-GAR</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Help!</div>
+          <div class="phrase-pt">Socorro!</div>
+          <div class="phrase-pron">soh-KOH-roo</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-en">Emergency number</div>
+          <div class="phrase-pt">112</div>
+          <div class="phrase-pron">one-one-two works fine</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="translate-card">
+      <h3>Live translator</h3>
+      <p class="tw-help">Type, tap Translate. Powered by Google Translate via direct link — opens in a new tab with your text pre-filled if you need more.</p>
+
+      <div class="tw-field">
+        <label id="srcLabel" for="srcText">English</label>
+        <textarea id="srcText" placeholder="Type your phrase here..."></textarea>
+      </div>
+
+      <div class="tw-direction">
+        <span id="dirFrom">English</span>
+        <button class="arrow" id="swapBtn" title="Swap">&#8646;</button>
+        <span id="dirTo">Portugu&ecirc;s</span>
+      </div>
+
+      <div class="tw-field">
+        <label id="dstLabel">Portugu&ecirc;s</label>
+        <div class="tw-output empty" id="dstText">Your translation will appear here.</div>
+      </div>
+
+      <div class="tw-buttons">
+        <button class="tw-btn primary" id="translateBtn">Translate</button>
+        <button class="tw-btn" id="openGoogle">Open in Google Translate</button>
+        <button class="tw-btn" id="speakBtn">&#128266; Speak</button>
+        <button class="tw-btn" id="clearBtn">Clear</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signoff">Boa viagem, rapazes.</div>
+    <div class="total-flex">Sun, sea, port at sunset, a Saturday on the marina.</div>
+    <div class="meta">Quarteira &middot; Vilamoura &middot; Algarve &middot; 21 &mdash; 24 May 2026</div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-content">
+    <button class="lb-close" id="lbClose">&times;</button>
+    <button class="lb-nav lb-prev" id="lbPrev">&lsaquo;</button>
+    <button class="lb-nav lb-next" id="lbNext">&rsaquo;</button>
+    <img id="lbImg" src="" alt="" />
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+</div>
+
+<script>
+  let currentGallery = [];
+  let currentIdx = 0;
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+
+  document.querySelectorAll('.venue-gallery').forEach(gallery => {
+    const photos = Array.from(gallery.querySelectorAll('.photo'));
+    photos.forEach((photo, idx) => {
+      photo.addEventListener('click', () => {
+        currentGallery = photos.map(p => ({ src: p.dataset.src, caption: p.dataset.caption || '' }));
+        currentIdx = idx;
+        openLightbox();
+      });
+    });
+  });
+
+  function openLightbox() {
+    const item = currentGallery[currentIdx];
+    lbImg.src = item.src;
+    lbImg.alt = item.caption;
+    lbCounter.textContent = (currentIdx + 1) + ' of ' + currentGallery.length + ' — ' + item.caption;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function nextImg() { currentIdx = (currentIdx + 1) % currentGallery.length; openLightbox(); }
+  function prevImg() { currentIdx = (currentIdx - 1 + currentGallery.length) % currentGallery.length; openLightbox(); }
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbNext').addEventListener('click', nextImg);
+  document.getElementById('lbPrev').addEventListener('click', prevImg);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextImg();
+    if (e.key === 'ArrowLeft') prevImg();
+  });
+
+  let srcLang = 'en', dstLang = 'pt';
+  const srcText = document.getElementById('srcText');
+  const dstText = document.getElementById('dstText');
+  const srcLabel = document.getElementById('srcLabel');
+  const dstLabel = document.getElementById('dstLabel');
+  const dirFrom = document.getElementById('dirFrom');
+  const dirTo = document.getElementById('dirTo');
+
+  const langName = (c) => c === 'en' ? 'English' : 'Português';
+
+  function updateLabels() {
+    srcLabel.textContent = langName(srcLang);
+    dstLabel.textContent = langName(dstLang);
+    dirFrom.textContent = langName(srcLang);
+    dirTo.textContent = langName(dstLang);
+    srcText.placeholder = srcLang === 'en' ? "Type your phrase here..." : "Escreva a sua frase aqui...";
+  }
+
+  document.getElementById('swapBtn').addEventListener('click', () => {
+    [srcLang, dstLang] = [dstLang, srcLang];
+    updateLabels();
+    const oldSrc = srcText.value;
+    const oldDst = dstText.classList.contains('empty') ? '' : dstText.textContent;
+    srcText.value = oldDst;
+    if (oldSrc) { dstText.textContent = oldSrc; dstText.classList.remove('empty'); }
+    else { dstText.textContent = "Your translation will appear here."; dstText.classList.add('empty'); }
+  });
+
+  async function translate() {
+    const text = srcText.value.trim();
+    if (!text) { dstText.textContent = "Type something first."; dstText.classList.add('empty'); return; }
+    dstText.classList.remove('empty');
+    dstText.textContent = "Translating...";
+    try {
+      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + srcLang + '&tl=' + dstLang + '&dt=t&q=' + encodeURIComponent(text);
+      const response = await fetch(url);
+      const data = await response.json();
+      const translated = data[0].map(seg => seg[0]).join('');
+      dstText.textContent = translated;
+    } catch (err) {
+      dstText.textContent = "Inline translate failed. Tap 'Open in Google Translate'.";
+      dstText.classList.add('empty');
+    }
+  }
+  document.getElementById('translateBtn').addEventListener('click', translate);
+  srcText.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); translate(); }
+  });
+  document.getElementById('openGoogle').addEventListener('click', () => {
+    const text = srcText.value.trim();
+    const url = text
+      ? 'https://translate.google.com/?sl=' + srcLang + '&tl=' + dstLang + '&text=' + encodeURIComponent(text) + '&op=translate'
+      : 'https://translate.google.com/?sl=' + srcLang + '&tl=' + dstLang + '&op=translate';
+    window.open(url, '_blank');
+  });
+  document.getElementById('speakBtn').addEventListener('click', () => {
+    const text = dstText.classList.contains('empty') ? '' : dstText.textContent;
+    if (!text || !('speechSynthesis' in window)) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = dstLang === 'pt' ? 'pt-PT' : 'en-GB';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  });
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    srcText.value = '';
+    dstText.textContent = "Your translation will appear here.";
+    dstText.classList.add('empty');
+  });
+
+  updateLabels();
+</script>
+
+</body>
+</html>
