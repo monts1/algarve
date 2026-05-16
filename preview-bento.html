@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview B: Bento &middot; Algarve May '26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Preview B: Bento grid ── */
+
+  .bento-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bento-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  .bento {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+  }
+  #b-itinerary { grid-column: 1; grid-row: 1 / 3; }
+  #b-calm      { grid-column: 2; grid-row: 1; }
+  #b-flat      { grid-column: 3; grid-row: 1; }
+  #b-lively    { grid-column: 2; grid-row: 2; }
+  #b-weather   { grid-column: 3; grid-row: 2; }
+  #b-walks     { grid-column: 1; grid-row: 3; }
+  #b-eat       { grid-column: 2; grid-row: 3; }
+  #b-phrases   { grid-column: 3; grid-row: 3; }
+
+  .bento-cell {
+    border-radius: 18px;
+    padding: 28px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .bento-cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 48px -16px rgba(42, 33, 24, 0.22);
+  }
+  .bc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0.55;
+  }
+  .bc-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .bc-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    flex: 1;
+    opacity: 0.65;
+  }
+  .bc-arrow {
+    margin-top: 20px;
+    font-size: 17px;
+    transition: transform 0.3s;
+    align-self: flex-end;
+    opacity: 0.5;
+  }
+  .bento-cell:hover .bc-arrow { transform: translateX(5px); opacity: 1; }
+
+  /* Itinerary - dark atlantic, tall left */
+  #b-itinerary {
+    background: var(--atlantic);
+    color: var(--cream);
+    min-height: 0;
+    padding: 36px;
+    justify-content: flex-end;
+  }
+  #b-itinerary .bc-title {
+    font-size: clamp(28px, 2.8vw, 40px);
+    line-height: 1.0;
+  }
+  #b-itinerary .bc-desc { opacity: 0.7; font-size: 14px; }
+
+  /* Calm - soft atlantic */
+  #b-calm {
+    background: rgba(26, 72, 112, 0.08);
+    border: 1px solid rgba(26, 72, 112, 0.13);
+    color: var(--ink);
+  }
+
+  /* Flat - sun yellow */
+  #b-flat {
+    background: rgba(243, 185, 65, 0.13);
+    border: 1px solid rgba(243, 185, 65, 0.24);
+    color: var(--ink);
+  }
+
+  /* Lively - dark ink */
+  #b-lively {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  /* Weather - olive */
+  #b-weather {
+    background: rgba(115, 129, 80, 0.1);
+    border: 1px solid rgba(115, 129, 80, 0.18);
+    color: var(--ink);
+  }
+
+  /* Walks - olive */
+  #b-walks {
+    background: rgba(115, 129, 80, 0.1);
+    border: 1px solid rgba(115, 129, 80, 0.18);
+    color: var(--ink);
+  }
+
+  /* Eat - terracotta */
+  #b-eat {
+    background: rgba(213, 107, 62, 0.1);
+    border: 1px solid rgba(213, 107, 62, 0.2);
+    color: var(--ink);
+  }
+
+  /* Phrases - soft atlantic */
+  #b-phrases {
+    background: rgba(26, 72, 112, 0.06);
+    border: 1px solid rgba(26, 72, 112, 0.12);
+    color: var(--ink);
+  }
+
+  @media (max-width: 760px) {
+    .bento {
+      grid-template-columns: 1fr 1fr;
+    }
+    #b-itinerary { grid-column: span 2; grid-row: auto; min-height: 220px; }
+    #b-lively    { grid-column: span 2; grid-row: auto; }
+    #b-calm, #b-flat, #b-weather, #b-walks, #b-eat, #b-phrases {
+      grid-column: auto; grid-row: auto;
+    }
+  }
+  @media (max-width: 480px) {
+    .bento { grid-template-columns: 1fr; }
+    #b-itinerary, #b-lively { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-dot"></span>Algarve &middot; May '26</a>
+    <ul>
+      <li><a href="itinerary.html">Days</a></li>
+      <li><a href="calm.html">Calm</a></li>
+      <li><a href="lively.html">Lively</a></li>
+      <li><a href="walks.html">Walks</a></li>
+      <li><a href="eat.html">Eat</a></li>
+      <li><a href="phrases.html">Phrases</a></li>
+      <li class="nav-bingo"><a href="bingo.html">Bingo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero-img" id="top" data-phase="pretrip">
+  <div class="hero-img-bg" id="heroBg"></div>
+  <div class="hero-img-tint"></div>
+  <div class="wrap hero-img-content">
+    <div class="hero-eyebrow">
+      <span class="pulse"></span>
+      <span id="heroEyebrowText">Monty &amp; Sahil &middot; 21&ndash;24 May 2026</span>
+    </div>
+    <h1 class="hero-img-title">Algarve, <em>al fresco</em>,<br>at <span class="accent">half pace</span>.</h1>
+    <p class="hero-img-lede">Three days in Quarteira and Vilamoura. Sea breeze, slow mornings, one calm wine evening and one big lively night.</p>
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="countdown-row">
+        <div class="cd-unit"><span class="cd-num" id="cdDays">-</span><span class="cd-label">days</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdHours">-</span><span class="cd-label">hours</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdMins">-</span><span class="cd-label">mins</span></div>
+      </div>
+      <div class="cd-caption" id="cdCaption">until the trip</div>
+    </div>
+    <a class="next-moment" id="nextMoment" href="itinerary.html">
+      <span class="nm-tag">Next up</span>
+      <span class="nm-body" id="nextMomentText">Loading...</span>
+      <span class="nm-arrow">&rarr;</span>
+    </a>
+  </div>
+  <a class="hero-credit" id="heroCredit" target="_blank" rel="noopener"></a>
+</header>
+
+<section class="block" style="padding: 80px 0 120px;">
+  <div class="wrap">
+    <div class="bento-eyebrow">Plan the trip</div>
+    <div class="bento">
+
+      <a class="bento-cell" id="b-itinerary" href="itinerary.html">
+        <div class="bc-label">Day-by-day</div>
+        <div class="bc-title">The full<br>schedule.</div>
+        <div class="bc-desc">Thu through Sun - all four days, hour by hour. Timings, options, costs.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-calm" href="calm.html">
+        <div class="bc-label">Friday evening</div>
+        <div class="bc-title">A calm night.</div>
+        <div class="bc-desc">Wine or port tasting, then dinner.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-flat" href="stay.html">
+        <div class="bc-label">Where we stay</div>
+        <div class="bc-title">SunnyQuarters.</div>
+        <div class="bc-desc">Quarteira &middot; Booked &middot; &pound;119 each</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-lively" href="lively.html">
+        <div class="bc-label">Saturday evening</div>
+        <div class="bc-title">The lively one.</div>
+        <div class="bc-desc">Atlantic Bar, the marina, Kadoc if we dare.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-weather" href="weather.html">
+        <div class="bc-label">Forecast</div>
+        <div class="bc-title">Live weather.</div>
+        <div class="bc-desc">16-day Quarteira outlook.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-walks" href="walks.html">
+        <div class="bc-label">Daytime</div>
+        <div class="bc-title">Walks &amp; air.</div>
+        <div class="bc-desc">Fal&eacute;sia cliffs &middot; Roman ruins &middot; promenade.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-eat" href="eat.html">
+        <div class="bc-label">Food</div>
+        <div class="bc-title">Where to eat.</div>
+        <div class="bc-desc">Three dinners, three moods.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+      <a class="bento-cell" id="b-phrases" href="phrases.html">
+        <div class="bc-label">Language</div>
+        <div class="bc-title">Portuguese.</div>
+        <div class="bc-desc">Key phrases + live translator.</div>
+        <div class="bc-arrow">&rarr;</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signoff">Boa viagem, rapazes.</div>
+    <div class="total-flex">Sun, sea, port at sunset, a Saturday on the marina.</div>
+    <div class="meta">Quarteira &middot; Vilamoura &middot; Algarve &middot; 21 - 24 May 2026</div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

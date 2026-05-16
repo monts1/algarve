@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview C: Rows &middot; Algarve May '26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Preview C: Full-width rows ── */
+
+  /* Fact strip - same as editorial */
+  .fact-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .fact-item {
+    padding: 36px 0 36px 32px;
+    border-right: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+  }
+  .fact-item:hover .fact-value { color: var(--terracotta); }
+  .fact-item:first-child { padding-left: 0; }
+  .fact-item:last-child { border-right: none; }
+  .fact-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .fact-value {
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .fact-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  @media (max-width: 640px) {
+    .fact-strip { grid-template-columns: 1fr; }
+    .fact-item { padding: 20px 0; border-right: none; border-bottom: 1px solid var(--line); }
+    .fact-item:last-child { border-bottom: none; }
+  }
+
+  /* Themed row layout */
+  .themed-row { padding: 100px 0; }
+  .row-inner {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .row-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .row-tag::before { content: ''; width: 24px; height: 1px; background: var(--terracotta); }
+  .row-headline {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(56px, 8vw, 108px);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .row-headline em { font-style: italic; font-weight: 300; color: var(--terracotta); }
+  .row-tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .row-right { display: flex; flex-direction: column; gap: 24px; }
+  .row-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
+  .row-body strong { color: var(--ink); font-weight: 600; }
+
+  /* Dark-background variants */
+  .themed-row.dark {
+    background: var(--atlantic);
+    color: var(--cream);
+  }
+  .themed-row.dark .row-tag { color: var(--sun); }
+  .themed-row.dark .row-tag::before { background: var(--sun); }
+  .themed-row.dark .row-headline { color: var(--cream); }
+  .themed-row.dark .row-headline em { color: var(--sun-soft); }
+  .themed-row.dark .row-tagline { color: rgba(250, 243, 224, 0.7); }
+  .themed-row.dark .row-body { color: rgba(250, 243, 224, 0.85); }
+  .themed-row.dark .row-body strong { color: var(--cream); }
+
+  /* Warm-background variant */
+  .themed-row.warm { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%); }
+
+  /* More links strip */
+  .more-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    padding: 72px 0 96px;
+    border-top: 1px solid var(--line);
+  }
+  .more-links-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 48px;
+    flex-shrink: 0;
+  }
+  .more-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 8px 0;
+    margin-right: 40px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .more-link::after { content: ' \2197'; font-size: 12px; opacity: 0.45; margin-left: 5px; }
+  .more-link:hover { color: var(--ink); border-bottom-color: var(--terracotta); }
+  .more-link:hover::after { opacity: 1; }
+
+  @media (max-width: 760px) {
+    .themed-row { padding: 72px 0; }
+    .row-inner { grid-template-columns: 1fr; gap: 36px; }
+    .row-headline { font-size: clamp(48px, 13vw, 76px); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-dot"></span>Algarve &middot; May '26</a>
+    <ul>
+      <li><a href="itinerary.html">Days</a></li>
+      <li><a href="calm.html">Calm</a></li>
+      <li><a href="lively.html">Lively</a></li>
+      <li><a href="walks.html">Walks</a></li>
+      <li><a href="eat.html">Eat</a></li>
+      <li><a href="phrases.html">Phrases</a></li>
+      <li class="nav-bingo"><a href="bingo.html">Bingo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero-img" id="top" data-phase="pretrip">
+  <div class="hero-img-bg" id="heroBg"></div>
+  <div class="hero-img-tint"></div>
+  <div class="wrap hero-img-content">
+    <div class="hero-eyebrow">
+      <span class="pulse"></span>
+      <span id="heroEyebrowText">Monty &amp; Sahil &middot; 21&ndash;24 May 2026</span>
+    </div>
+    <h1 class="hero-img-title">Algarve, <em>al fresco</em>,<br>at <span class="accent">half pace</span>.</h1>
+    <p class="hero-img-lede">Three days in Quarteira and Vilamoura. Sea breeze, slow mornings, one calm wine evening and one big lively night.</p>
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="countdown-row">
+        <div class="cd-unit"><span class="cd-num" id="cdDays">-</span><span class="cd-label">days</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdHours">-</span><span class="cd-label">hours</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdMins">-</span><span class="cd-label">mins</span></div>
+      </div>
+      <div class="cd-caption" id="cdCaption">until the trip</div>
+    </div>
+    <a class="next-moment" id="nextMoment" href="itinerary.html">
+      <span class="nm-tag">Next up</span>
+      <span class="nm-body" id="nextMomentText">Loading...</span>
+      <span class="nm-arrow">&rarr;</span>
+    </a>
+  </div>
+  <a class="hero-credit" id="heroCredit" target="_blank" rel="noopener"></a>
+</header>
+
+<section style="padding: 64px 0;">
+  <div class="wrap">
+    <div class="fact-strip">
+      <a class="fact-item" href="stay.html">
+        <div class="fact-label">The flat</div>
+        <div class="fact-value">SunnyQuarters</div>
+        <div class="fact-sub">Quarteira &middot; &pound;119.69 each &middot; check-in Thu 15:00</div>
+      </a>
+      <a class="fact-item" href="flights.html">
+        <div class="fact-label">Flights</div>
+        <div class="fact-value">Both confirmed</div>
+        <div class="fact-sub">Sahil 09:10 Thu &middot; Monty already there from Tue</div>
+      </a>
+      <a class="fact-item" href="weather.html">
+        <div class="fact-label">Weather</div>
+        <div class="fact-value">Live forecast</div>
+        <div class="fact-sub">16-day outlook &middot; trip days highlighted</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="themed-row warm">
+  <div class="wrap">
+    <div class="row-inner">
+      <div class="row-left">
+        <div class="row-tag">Friday evening</div>
+        <div class="row-headline">A calm<br><em>night</em>.</div>
+        <div class="row-tagline">Slow it down before the big one.</div>
+      </div>
+      <div class="row-right">
+        <div class="row-body">
+          Pick one tasting - <strong>port</strong> at Oporto Tavern or <strong>wine</strong> at Rolha a Rolha. Then a proper Portuguese dinner with a shared bottle and no rush.
+        </div>
+        <a class="btn primary" href="calm.html">Plan the calm night</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="themed-row dark">
+  <div class="wrap">
+    <div class="row-inner">
+      <div class="row-left">
+        <div class="row-tag">Saturday evening</div>
+        <div class="row-headline">The<br><em>lively</em><br>one.</div>
+        <div class="row-tagline">Marina bar-hop with the young crowd.</div>
+      </div>
+      <div class="row-right">
+        <div class="row-body">
+          <strong>Atlantic Bar</strong> as the opener. Then the marina strip - O'Neills, Cats, MoTAO. <strong>Kadoc</strong> later if it's still on. Boat party as a wildcard.
+        </div>
+        <a class="btn primary" href="lively.html">Plan the lively night</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="themed-row">
+  <div class="wrap">
+    <div class="row-inner">
+      <div class="row-left">
+        <div class="row-tag">Daytime</div>
+        <div class="row-headline">Walks<br>and<br><em>air</em>.</div>
+        <div class="row-tagline">Saving your legs for the proper trip later.</div>
+      </div>
+      <div class="row-right">
+        <div class="row-body">
+          <strong>Fal&eacute;sia clifftop</strong> walk with the best views on the coast. <strong>Quarteira promenade</strong> for slow mornings. <strong>Cerro da Vila</strong> Roman ruins - Friday only, closed weekends.
+        </div>
+        <a class="btn secondary" href="walks.html">See the daytime options</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background: var(--bg-warm);">
+  <div class="wrap">
+    <div class="more-links">
+      <div class="more-links-label">More</div>
+      <a class="more-link" href="itinerary.html">Day-by-day</a>
+      <a class="more-link" href="eat.html">Where to eat</a>
+      <a class="more-link" href="stay.html">The apartment</a>
+      <a class="more-link" href="flights.html">Flights</a>
+      <a class="more-link" href="phrases.html">Portuguese phrases</a>
+      <a class="more-link" href="weather.html">Weather</a>
+      <a class="more-link" href="bingo.html">Trip bingo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signoff">Boa viagem, rapazes.</div>
+    <div class="total-flex">Sun, sea, port at sunset, a Saturday on the marina.</div>
+    <div class="meta">Quarteira &middot; Vilamoura &middot; Algarve &middot; 21 - 24 May 2026</div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
