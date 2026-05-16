@@ -139,123 +139,213 @@
   const weatherGrid = document.getElementById('weather-grid');
   if (weatherGrid) {
     const LAT = 37.07, LON = -8.10;
+    const LOCATION_KEY = '273215'; // Quarteira, Portugal
+    const ACC_KEY = 'zpka_adf498a2165840ddaae9a31e6ba99cd5_f19ac6bb';
     const TRIP = new Set(['2026-05-21', '2026-05-22', '2026-05-23', '2026-05-24']);
 
-    function wmoInfo(code) {
-      if (code === 0)   return ['☀️', 'Clear sky'];
-      if (code <= 2)    return ['🌤️', 'Partly cloudy'];
-      if (code === 3)   return ['☁️', 'Overcast'];
-      if (code <= 48)   return ['🌫️', 'Foggy'];
-      if (code <= 55)   return ['🌦️', 'Drizzle'];
-      if (code <= 65)   return ['🌧️', 'Rain'];
-      if (code <= 75)   return ['❄️', 'Snow'];
-      if (code <= 82)   return ['🌦️', 'Showers'];
-      return                   ['⛈️', 'Storms'];
+    function accuFetch(path) {
+      return fetch('https://dataservice.accuweather.com' + path, {
+        headers: { 'Authorization': 'Bearer ' + ACC_KEY }
+      }).then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + path);
+        return r.json();
+      });
+    }
+
+    // AccuWeather icon code (1-44) to emoji + short description
+    function accuIcon(code) {
+      if (code === 1 || code === 2)                            return ['☀️', 'Sunny'];
+      if (code === 3 || code === 4 || code === 5)              return ['🌤️', 'Partly sunny'];
+      if (code === 6 || code === 7 || code === 8)              return ['☁️', 'Cloudy'];
+      if (code === 11)                                         return ['🌫️', 'Fog'];
+      if (code === 12 || code === 13 || code === 14)           return ['🌦️', 'Showers'];
+      if (code === 15 || code === 16 || code === 17)           return ['⛈️', 'Storms'];
+      if (code === 18 || code === 26)                          return ['🌧️', 'Rain'];
+      if (code === 19 || code === 20 || code === 21 || code === 22 || code === 23) return ['❄️', 'Snow'];
+      if (code === 24 || code === 25 || code === 29)           return ['🌨️', 'Sleet'];
+      if (code === 30)                                         return ['🥵', 'Hot'];
+      if (code === 31)                                         return ['🥶', 'Cold'];
+      if (code === 32)                                         return ['💨', 'Windy'];
+      if (code === 33 || code === 34)                          return ['🌙', 'Clear'];
+      if (code === 35 || code === 36 || code === 37 || code === 38) return ['☁️', 'Cloudy'];
+      if (code === 39 || code === 40)                          return ['🌧️', 'Showers'];
+      if (code === 41 || code === 42)                          return ['⛈️', 'Storms'];
+      if (code === 43 || code === 44)                          return ['❄️', 'Snow'];
+      return ['🌤️', '-'];
     }
 
     function fmtDay(dateStr) {
-      const d = new Date(dateStr + 'T12:00:00');
+      const d = new Date(dateStr.slice(0, 10) + 'T12:00:00');
       return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
     }
 
-    const url = 'https://api.open-meteo.com/v1/forecast'
-      + '?latitude=' + LAT + '&longitude=' + LON
-      + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max'
-      + '&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m'
-      + '&timezone=Europe%2FLisbon&forecast_days=16'
-      + '&wind_speed_unit=mph&models=ukmo_seamless';
+    function kmhToMph(v) { return Math.round((v || 0) * 0.621371); }
 
-    fetch(url)
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById('weather-loading').style.display = 'none';
-        weatherGrid.style.display = '';
+    function renderRainWidget(minuteData) {
+      const widget = document.createElement('div');
+      widget.style.cssText = 'margin-bottom: 40px; padding: 20px; background: var(--bg); border-radius: 8px; border-left: 4px solid var(--bougainvillea);';
 
-        const d = data.daily;
-        const h = data.hourly;
+      const phrase = (minuteData.Summary && minuteData.Summary.Phrase) || 'No rain data';
+      const intervals = (minuteData.Intervals || []).filter(i => i.Minute < 60);
+      const hasRain = intervals.some(i => (i.Dbz || 0) > 0);
 
-        // Index hourly entries by date
-        const byDate = {};
-        h.time.forEach((t, i) => {
-          const date = t.slice(0, 10);
-          const hour = parseInt(t.slice(11, 13));
-          if (!byDate[date]) byDate[date] = [];
-          byDate[date].push({
-            hour,
-            temp: h.temperature_2m[i],
-            code: h.weather_code[i],
-            rain: h.precipitation_probability[i],
-            wind: h.wind_speed_10m[i]
-          });
+      if (!hasRain) {
+        widget.innerHTML = '<strong>Next 60 minutes:</strong> ' + phrase + ' &#9728;&#65039;';
+      } else {
+        let bars = '';
+        intervals.forEach(i => {
+          const intensity = Math.max(0.15, Math.min((i.Dbz || 0) / 40, 1));
+          const t = new Date(i.StartDateTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+          bars += '<div style="flex:1; height:40px; background:var(--bougainvillea); margin-right:2px; opacity:' + intensity.toFixed(2) + '; border-radius:2px;" title="' + t + ': ' + (i.ShortPhrase || 'Rain') + '"></div>';
         });
+        widget.innerHTML = '<strong>Next 60 minutes:</strong> ' + phrase + '<div style="display:flex; gap:0; margin-top:12px; height:40px;">' + bars + '</div>';
+      }
 
-        const list = document.createElement('div');
-        list.className = 'weather-list';
+      return widget;
+    }
 
-        d.time.forEach((date, i) => {
-          const isTrip = TRIP.has(date);
-          const [icon, desc] = wmoInfo(d.weather_code[i]);
-          const rainMm = d.precipitation_sum[i];
-          const rainLabel = rainMm > 0 ? rainMm.toFixed(1) + 'mm rain' : 'Dry';
-          const windLabel = Math.round(d.wind_speed_10m_max[i]) + ' mph max';
+    function renderTodaySummary(d) {
+      const summary = document.createElement('div');
+      summary.style.cssText = 'margin-bottom: 40px; padding: 20px; background: var(--bg); border-radius: 8px; border-left: 4px solid var(--atlantic);';
 
-          const row = document.createElement('div');
-          row.className = 'weather-day-row' + (isTrip ? ' trip-day' : '');
+      const temp = d.Temperature || {};
+      const day = d.Day || {};
+      const wind = (day.Wind && day.Wind.Speed) || {};
+      const uv = (day.UVIndexFloat || {});
 
-          // Summary bar
-          const summary = document.createElement('div');
-          summary.className = 'weather-day-summary';
-          summary.innerHTML =
-            '<span class="weather-summary-name">' + fmtDay(date) + (isTrip ? ' ★' : '') + '</span>'
-            + '<span class="weather-summary-icon">' + icon + '</span>'
-            + '<span class="weather-summary-temps">' + Math.round(d.temperature_2m_max[i]) + '&deg;'
-            + '<span class="lo"> / ' + Math.round(d.temperature_2m_min[i]) + '&deg;</span></span>'
-            + '<span class="weather-summary-desc">' + desc + '</span>'
-            + '<span class="weather-summary-rain">' + rainLabel + '</span>'
-            + '<span class="weather-summary-wind">' + windLabel + '</span>'
-            + '<span class="weather-chevron">&#8964;</span>';
+      const high = Math.round(temp.Maximum && temp.Maximum.Value);
+      const low = Math.round(temp.Minimum && temp.Minimum.Value);
+      const condition = day.IconPhrase || 'No data';
+      const rain = (day.PrecipitationProbability || 0) + '%';
+      const cloud = (day.CloudCover || '-');
+      const uvMax = uv.Maximum ? Math.round(uv.Maximum) : '-';
+      const humidity = (day.RelativeHumidity && day.RelativeHumidity.Average) ? Math.round(day.RelativeHumidity.Average) : '-';
+      const windSpeed = wind.Value ? kmhToMph(wind.Value) : '-';
+      const windDir = (wind.Direction && wind.Direction.Localized) || 'variable';
 
-          // Hourly expansion
-          const hourlyWrap = document.createElement('div');
-          hourlyWrap.className = 'weather-hourly';
-          const hourlyInner = document.createElement('div');
-          hourlyInner.className = 'weather-hourly-inner';
-          const table = document.createElement('div');
-          table.className = 'weather-hourly-table';
+      const text = 'Today will be ' + condition.toLowerCase() + ' with a high of ' + high + '°C and low of ' + low + '°C. '
+        + 'Cloud cover ' + cloud + '%, chance of rain ' + rain + '. '
+        + 'UV index peaks at ' + uvMax + ', humidity ' + humidity + '%. '
+        + 'Winds from ' + windDir + ' at ' + windSpeed + ' mph.';
 
-          (byDate[date] || [])
-            .filter(e => e.hour >= 6 && e.hour % 3 === 0)
-            .forEach(e => {
-              const [hIcon] = wmoInfo(e.code);
-              const hRow = document.createElement('div');
-              hRow.className = 'weather-hour-row';
-              hRow.innerHTML =
-                '<span class="weather-hour-time">' + String(e.hour).padStart(2, '0') + ':00</span>'
-                + '<span class="weather-hour-icon">' + hIcon + '</span>'
-                + '<span class="weather-hour-temp">' + Math.round(e.temp) + '&deg;</span>'
-                + '<span class="weather-hour-rain">' + (e.rain != null ? e.rain + '% rain chance' : '--') + '</span>'
-                + '<span class="weather-hour-wind">' + Math.round(e.wind) + ' mph</span>';
-              table.appendChild(hRow);
-            });
+      summary.innerHTML = '<strong>Today:</strong> ' + text;
+      return summary;
+    }
 
-          hourlyInner.appendChild(table);
-          hourlyWrap.appendChild(hourlyInner);
-          row.appendChild(summary);
-          row.appendChild(hourlyWrap);
-          row.addEventListener('click', () => row.classList.toggle('open'));
-          list.appendChild(row);
+    function renderForecast(minuteData, hourlyData, dailyData) {
+      document.getElementById('weather-loading').style.display = 'none';
+      weatherGrid.style.display = '';
+
+      weatherGrid.appendChild(renderRainWidget(minuteData));
+
+      // Index hourly entries by date
+      const byDate = {};
+      hourlyData.forEach(h => {
+        const date = h.DateTime.slice(0, 10);
+        const hour = parseInt(h.DateTime.slice(11, 13));
+        if (!byDate[date]) byDate[date] = [];
+        byDate[date].push({
+          hour,
+          temp: h.Temperature.Value,
+          iconCode: h.WeatherIcon,
+          rain: h.PrecipitationProbability,
+          wind: kmhToMph(h.Wind && h.Wind.Speed && h.Wind.Speed.Value)
         });
-
-        const src = document.createElement('p');
-        src.className = 'weather-source';
-        src.textContent = 'Met Office model (UKMO Seamless) via Open-Meteo · wind in mph';
-        list.appendChild(src);
-        weatherGrid.appendChild(list);
-      })
-      .catch(() => {
-        document.getElementById('weather-loading').style.display = 'none';
-        document.getElementById('weather-error').style.display = 'block';
       });
+
+      const list = document.createElement('div');
+      list.className = 'weather-list';
+
+      const todayIso = new Date().toISOString().slice(0, 10);
+      const todayForecast = dailyData.DailyForecasts.find(d => d.Date.slice(0, 10) === todayIso);
+      if (todayForecast) {
+        list.appendChild(renderTodaySummary(todayForecast));
+      }
+
+      dailyData.DailyForecasts.forEach(d => {
+        const date = d.Date.slice(0, 10);
+        const isTrip = TRIP.has(date);
+        const isToday = date === todayIso;
+        const [icon, desc] = accuIcon(d.Day.Icon);
+        const rainPct = d.Day.PrecipitationProbability || 0;
+        const rainMm = (d.Day.Rain && d.Day.Rain.Value) || 0;
+        const rainLabel = rainPct > 0
+          ? rainPct + '% (' + rainMm.toFixed(1) + 'mm)'
+          : 'Dry';
+        const windMph = kmhToMph(d.Day.Wind && d.Day.Wind.Speed && d.Day.Wind.Speed.Value);
+        const windLabel = windMph + ' mph max';
+
+        const row = document.createElement('div');
+        row.className = 'weather-day-row' + (isTrip ? ' trip-day' : '') + (isToday ? ' open' : '');
+
+        const summary = document.createElement('div');
+        summary.className = 'weather-day-summary';
+        summary.innerHTML =
+          '<span class="weather-summary-name">' + fmtDay(date) + (isTrip ? ' &#9733;' : '') + '</span>'
+          + '<span class="weather-summary-icon">' + icon + '</span>'
+          + '<span class="weather-summary-temps">' + Math.round(d.Temperature.Maximum.Value) + '&deg;'
+          + '<span class="lo"> / ' + Math.round(d.Temperature.Minimum.Value) + '&deg;</span></span>'
+          + '<span class="weather-summary-desc">' + desc + '</span>'
+          + '<span class="weather-summary-rain">' + rainLabel + '</span>'
+          + '<span class="weather-summary-wind">' + windLabel + '</span>'
+          + '<span class="weather-chevron">&#8964;</span>';
+
+        const hourlyWrap = document.createElement('div');
+        hourlyWrap.className = 'weather-hourly';
+        const hourlyInner = document.createElement('div');
+        hourlyInner.className = 'weather-hourly-inner';
+        const table = document.createElement('div');
+        table.className = 'weather-hourly-table';
+
+        const hours = (byDate[date] || []).filter(e => e.hour >= 6);
+
+        if (hours.length === 0) {
+          const note = document.createElement('div');
+          note.className = 'weather-hour-row';
+          note.style.opacity = '0.7';
+          note.innerHTML = '<span>Hourly detail available up to ' + fmtDay(hourlyData[hourlyData.length - 1].DateTime) + '. See daily summary above.</span>';
+          table.appendChild(note);
+        } else {
+          hours.forEach(e => {
+            const [hIcon] = accuIcon(e.iconCode);
+            const hRow = document.createElement('div');
+            hRow.className = 'weather-hour-row';
+            hRow.innerHTML =
+              '<span class="weather-hour-time">' + String(e.hour).padStart(2, '0') + ':00</span>'
+              + '<span class="weather-hour-icon">' + hIcon + '</span>'
+              + '<span class="weather-hour-temp">' + Math.round(e.temp) + '&deg;</span>'
+              + '<span class="weather-hour-rain">' + (e.rain != null ? e.rain + '% rain chance' : 'No data') + '</span>'
+              + '<span class="weather-hour-wind">' + e.wind + ' mph</span>';
+            table.appendChild(hRow);
+          });
+        }
+
+        hourlyInner.appendChild(table);
+        hourlyWrap.appendChild(hourlyInner);
+        row.appendChild(summary);
+        row.appendChild(hourlyWrap);
+        row.addEventListener('click', () => row.classList.toggle('open'));
+        list.appendChild(row);
+      });
+
+      const src = document.createElement('p');
+      src.className = 'weather-source';
+      src.textContent = 'AccuWeather forecast for Quarteira (MinuteCast, 5-day hourly, 15-day daily) · wind in mph';
+      list.appendChild(src);
+      weatherGrid.appendChild(list);
+    }
+
+    Promise.all([
+      accuFetch('/forecasts/v1/minute?q=' + LAT + ',' + LON + '&details=true'),
+      accuFetch('/forecasts/v1/hourly/120hour/' + LOCATION_KEY + '?metric=true&details=true'),
+      accuFetch('/forecasts/v1/daily/15day/' + LOCATION_KEY + '?metric=true&details=true')
+    ]).then(([minute, hourly, daily]) => {
+      renderForecast(minute, hourly, daily);
+    }).catch(err => {
+      console.error('Weather load failed:', err);
+      document.getElementById('weather-loading').style.display = 'none';
+      document.getElementById('weather-error').style.display = 'block';
+    });
   }
 
   // ── Bingo ───────────────────────────────────────────────────────
