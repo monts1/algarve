@@ -1,4 +1,18 @@
 
+  // ── Nav: scroll state + active page highlight ───────────────────
+  const topNav = document.querySelector('nav.topnav');
+  if (topNav) {
+    window.addEventListener('scroll', () => {
+      topNav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    topNav.querySelectorAll('ul a').forEach(a => {
+      const href = a.getAttribute('href').split('/').pop();
+      if (href === currentPage) a.classList.add('active');
+    });
+  }
+
   // ── Lightbox ────────────────────────────────────────────────────
   const lightbox = document.getElementById('lightbox');
   if (lightbox) {
@@ -663,9 +677,9 @@
   const heroImg = document.querySelector('.hero-img');
   if (heroImg) {
     const PHASES = {
-      pretrip: { img: 'img/hero/pretrip.jpg', credit: 'Quarteira promenade - Wikimedia Commons', creditUrl: 'https://commons.wikimedia.org/wiki/File:Quarteira_Panor%C3%A2mica_-_Marginal_Este_-_panoramio.jpg' },
-      thu:     { img: 'img/hero/thu.jpg',     credit: 'Quarteira beach - Wikimedia Commons',     creditUrl: 'https://commons.wikimedia.org/wiki/File:Marginal_Este_Quarteira_-_panoramio.jpg' },
-      fri:     { img: 'img/hero/fri.jpg',     credit: 'Cerro da Vila ruins - Wikimedia Commons', creditUrl: 'https://commons.wikimedia.org/wiki/File:Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG' },
+      pretrip: { img: 'img/hero/pretrip.jpg', credit: 'Praia da Marinha - Wikimedia Commons', creditUrl: 'https://commons.wikimedia.org/wiki/File:Praia_da_Marinha_-_panoramio.jpg' },
+      thu:     { img: 'img/hero/thu.jpg',     credit: 'Quarteira beach - Wikimedia Commons',   creditUrl: 'https://commons.wikimedia.org/wiki/File:Marginal_Este_Quarteira_-_panoramio.jpg' },
+      fri:     { img: 'img/hero/fri.jpg',     credit: 'Alvor sunset - Wikimedia Commons',       creditUrl: 'https://commons.wikimedia.org/wiki/File:Portugal_-_Algarve_-_Alvor_-_sunset_-_one_person_on_the_beach_(25732360902).jpg' },
       sat:     { img: 'img/hero/sat.jpg',     credit: 'Vilamoura marina - Wikimedia Commons',    creditUrl: 'https://commons.wikimedia.org/wiki/File:Vilamoura_09_(36679853404).jpg' },
       sun:     { img: 'img/hero/sun.jpg',     credit: 'Falesia cliffs - Wikimedia Commons',      creditUrl: 'https://commons.wikimedia.org/wiki/File:Fal%C3%A9sia_-_cliffs_(13389084795).jpg' },
       post:    { img: 'img/hero/post.jpg',    credit: 'Algarve sunset - Wikimedia Commons',      creditUrl: 'https://commons.wikimedia.org/wiki/File:Portugal_-_Algarve_-_Alvor_-_sunset_-_one_person_on_the_beach_(25732360902).jpg' }
