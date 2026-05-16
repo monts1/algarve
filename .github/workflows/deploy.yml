@@ -22,9 +22,9 @@ jobs:
           };
           EOF
 
-      # - name: Commit and push config.js
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add config.js
-      #     git diff --quiet && git diff --staged --quiet || (git commit -m "Generated config.js [skip ci]" && git push)
+      - name: Commit and push config.js
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add config.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Generated config.js [skip ci]" && git push)
