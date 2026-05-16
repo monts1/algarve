@@ -351,89 +351,397 @@
   // ── Bingo ───────────────────────────────────────────────────────
   const bingoBoard = document.getElementById('bingo-board');
   if (bingoBoard) {
-    const SQUARES = [
-      'Someone gets sunburned',
-      'Pastel de nata consumed',
-      '"Just one more drink" x3',
-      'Wrong thing ordered by mistake',
-      'Falls asleep on the beach',
-      'Spills a drink',
-      '20+ min debate on where to eat',
-      'Photo worthy of a postcard',
-      '"I\'m not hungry" then eats loads',
-      'Gets lost finding a venue',
-      'Still out past 3am',
-      'Spots a stray cat',
-      'The Algarve!',
-      'Forgets to apply sunscreen',
-      'Ends up somewhere unplanned',
-      'Genuine "wow" at the view',
-      'Attempts Portuguese',
-      'Loses track of whose round it is',
-      'Catches a sunset or sunrise',
-      'Orders something, no idea what it is',
-      '"We should do this every year"',
-      'Gets hit on at the bar',
-      'Refuses to leave when it\'s time',
-      'Mentions prices back home',
-      'Ugly-cries at a banger'
-    ];
+    const CARDS = {
+      realistic: [
+        'Someone gets sunburned',
+        'Pastel de nata consumed',
+        '"Just one more drink" x3',
+        'Wrong thing ordered by mistake',
+        'Spills a drink',
+        '20+ min debate on where to eat',
+        'Photo worthy of a postcard',
+        '"I\'m not hungry" then eats loads',
+        'Gets lost finding a venue',
+        'Spots a stray cat',
+        'Forgets to apply sunscreen',
+        'Ends up somewhere unplanned',
+        'The Algarve!',
+        'Attempts Portuguese',
+        'Catches a sunset or sunrise',
+        'Orders something, no idea what it is',
+        'Gets hit on at the bar',
+        'Refuses to leave when it\'s time',
+        'Wears the same shirt two days running',
+        'Hangover writes off a morning',
+        'Sunglasses lost or sat on',
+        'Photo of the food before eating it',
+        'Asks a local for directions',
+        'Buy something we\'d never buy at home',
+        'Pre-drinks at the apartment'
+      ],
+      fun: [
+        'Stranger buys us a round',
+        'Karaoke happens, by us',
+        'Locals invite us to their table',
+        'Bird steals food off a plate',
+        'Bump into someone from home',
+        'Sunrise after staying up (not waking up)',
+        'Dolphins spotted',
+        'Convince a stranger we\'re famous',
+        'Free shot from a bartender',
+        'Sea warmer than expected',
+        'Bartender remembers our order',
+        'Live music we didn\'t plan for',
+        'The Algarve!',
+        'Octopus eaten, tentacles and all',
+        'Make actual friends with locals',
+        'Matching outfits (unplanned)',
+        'Spontaneous boat ride',
+        'End up in a wedding/parade/festival',
+        'Learn a new skill before lunch',
+        'Drink something we\'ve never had before',
+        'Find a beach with no one else on it',
+        'Photo with a stranger, nailed it',
+        'Order the entire left side of the menu',
+        'A meal that makes the table go quiet',
+        'Recommendation from a stranger pays off'
+      ]
+    };
     const FREE = 12;
-    const KEY = 'algarve-bingo-v1';
+    const LS_KEY = 'algarve-bingo-v2';
+    const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019e31ea-6757-7be4-b7d0-3b494f669be1';
+    const POLL_MS = 8000;
 
-    let state = Array(25).fill(false);
-    state[FREE] = true;
+    let active = 'realistic';
+    let state = {
+      realistic: Array(25).fill(false),
+      fun: Array(25).fill(false)
+    };
+    state.realistic[FREE] = true;
+    state.fun[FREE] = true;
 
-    try {
-      const saved = JSON.parse(localStorage.getItem(KEY));
-      if (Array.isArray(saved) && saved.length === 25) { state = saved; state[FREE] = true; }
-    } catch (e) {}
+    const syncEl = document.getElementById('bingo-sync');
+    const banner = document.getElementById('bingo-win-banner');
+    const resetBtn = document.getElementById('bingo-reset');
+    const tabs = document.querySelectorAll('.bingo-tab');
 
-    function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+    function setSync(text, cls) {
+      if (!syncEl) return;
+      syncEl.textContent = text;
+      syncEl.classList.remove('ok', 'error');
+      if (cls) syncEl.classList.add(cls);
+    }
 
-    function winLines() {
+    function loadLocal() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(LS_KEY));
+        if (saved && Array.isArray(saved.realistic) && Array.isArray(saved.fun)
+          && saved.realistic.length === 25 && saved.fun.length === 25) {
+          state = saved;
+        }
+      } catch (e) {}
+      state.realistic[FREE] = true;
+      state.fun[FREE] = true;
+    }
+
+    function saveLocal() {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function normalise(remote) {
+      if (!remote || typeof remote !== 'object') return null;
+      const out = { realistic: Array(25).fill(false), fun: Array(25).fill(false) };
+      ['realistic', 'fun'].forEach(card => {
+        if (Array.isArray(remote[card]) && remote[card].length === 25) {
+          out[card] = remote[card].map(Boolean);
+        }
+      });
+      out.realistic[FREE] = true;
+      out.fun[FREE] = true;
+      return out;
+    }
+
+    async function pullState() {
+      try {
+        const r = await fetch(BLOB_URL, { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const remote = normalise(await r.json());
+        if (remote) {
+          state = remote;
+          saveLocal();
+          render();
+          setSync('Synced', 'ok');
+        }
+      } catch (e) {
+        setSync('Offline - this device only', 'error');
+      }
+    }
+
+    let pushTimer = null;
+    let pushing = false;
+    function pushState() {
+      clearTimeout(pushTimer);
+      setSync('Saving...');
+      pushTimer = setTimeout(async () => {
+        if (pushing) { pushTimer = setTimeout(pushState, 200); return; }
+        pushing = true;
+        try {
+          const r = await fetch(BLOB_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state)
+          });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          setSync('Synced', 'ok');
+        } catch (e) {
+          setSync('Offline - this device only', 'error');
+        } finally {
+          pushing = false;
+        }
+      }, 250);
+    }
+
+    function winLines(s) {
       const lines = [];
       for (let r = 0; r < 5; r++) {
         const row = [r*5, r*5+1, r*5+2, r*5+3, r*5+4];
-        if (row.every(i => state[i])) lines.push(row);
+        if (row.every(i => s[i])) lines.push(row);
       }
       for (let c = 0; c < 5; c++) {
         const col = [c, c+5, c+10, c+15, c+20];
-        if (col.every(i => state[i])) lines.push(col);
+        if (col.every(i => s[i])) lines.push(col);
       }
-      if ([0,6,12,18,24].every(i => state[i])) lines.push([0,6,12,18,24]);
-      if ([4,8,12,16,20].every(i => state[i])) lines.push([4,8,12,16,20]);
+      if ([0,6,12,18,24].every(i => s[i])) lines.push([0,6,12,18,24]);
+      if ([4,8,12,16,20].every(i => s[i])) lines.push([4,8,12,16,20]);
       return lines;
     }
 
+    function buildBoard() {
+      bingoBoard.innerHTML = '';
+      CARDS[active].forEach((text, i) => {
+        const cell = document.createElement('div');
+        cell.className = 'bingo-cell' + (i === FREE ? ' free' : '');
+        cell.textContent = text;
+        if (i !== FREE) {
+          cell.addEventListener('click', () => {
+            state[active][i] = !state[active][i];
+            saveLocal();
+            render();
+            pushState();
+          });
+        }
+        bingoBoard.appendChild(cell);
+      });
+    }
+
     function render() {
-      const winning = new Set(winLines().flat());
+      const s = state[active];
+      const winning = new Set(winLines(s).flat());
       bingoBoard.querySelectorAll('.bingo-cell').forEach((cell, i) => {
-        cell.classList.toggle('marked', state[i] && i !== FREE);
+        cell.classList.toggle('marked', s[i] && i !== FREE);
         cell.classList.toggle('winning', winning.has(i));
       });
-      const banner = document.getElementById('bingo-win-banner');
       if (banner) banner.classList.toggle('visible', winning.size > 0);
     }
 
-    SQUARES.forEach((text, i) => {
-      const cell = document.createElement('div');
-      cell.className = 'bingo-cell' + (i === FREE ? ' free' : '');
-      cell.textContent = text;
-      if (i !== FREE) {
-        cell.addEventListener('click', () => { state[i] = !state[i]; save(); render(); });
-      }
-      bingoBoard.appendChild(cell);
-    });
-    render();
-
-    const resetBtn = document.getElementById('bingo-reset');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        state = Array(25).fill(false);
-        state[FREE] = true;
-        save();
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const card = tab.dataset.card;
+        if (card === active) return;
+        active = card;
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.card === active));
+        buildBoard();
         render();
       });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        state[active] = Array(25).fill(false);
+        state[active][FREE] = true;
+        saveLocal();
+        render();
+        pushState();
+      });
     }
+
+    loadLocal();
+    buildBoard();
+    render();
+    pullState();
+
+    setInterval(() => {
+      if (document.visibilityState === 'visible' && !pushing) pullState();
+    }, POLL_MS);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') pullState();
+    });
+  }
+
+  // Homepage: phase-adaptive hero, countdown, next moment
+  const heroImg = document.querySelector('.hero-img');
+  if (heroImg) {
+    const PHASES = {
+      pretrip: { img: 'img/hero/pretrip.jpg', credit: 'Quarteira promenade - Wikimedia Commons', creditUrl: 'https://commons.wikimedia.org/wiki/File:Quarteira_Panor%C3%A2mica_-_Marginal_Este_-_panoramio.jpg' },
+      thu:     { img: 'img/hero/thu.jpg',     credit: 'Quarteira beach - Wikimedia Commons',     creditUrl: 'https://commons.wikimedia.org/wiki/File:Marginal_Este_Quarteira_-_panoramio.jpg' },
+      fri:     { img: 'img/hero/fri.jpg',     credit: 'Cerro da Vila ruins - Wikimedia Commons', creditUrl: 'https://commons.wikimedia.org/wiki/File:Cerro_da_Vila_Roman_Ruins_Saturday_20_November_2010.JPG' },
+      sat:     { img: 'img/hero/sat.jpg',     credit: 'Vilamoura marina - Wikimedia Commons',    creditUrl: 'https://commons.wikimedia.org/wiki/File:Vilamoura_09_(36679853404).jpg' },
+      sun:     { img: 'img/hero/sun.jpg',     credit: 'Falesia cliffs - Wikimedia Commons',      creditUrl: 'https://commons.wikimedia.org/wiki/File:Fal%C3%A9sia_-_cliffs_(13389084795).jpg' },
+      post:    { img: 'img/hero/post.jpg',    credit: 'Algarve sunset - Wikimedia Commons',      creditUrl: 'https://commons.wikimedia.org/wiki/File:Portugal_-_Algarve_-_Alvor_-_sunset_-_one_person_on_the_beach_(25732360902).jpg' }
+    };
+
+    function dt(y, m, d, hh, mm) { return new Date(y, m - 1, d, hh, mm, 0); }
+    const MILESTONES = [
+      // Thursday 21 May - Day 1
+      { t: dt(2026, 5, 21,  6, 30), label: 'Sahil takes off from Bristol' },
+      { t: dt(2026, 5, 21,  9, 10), label: 'Sahil lands at Faro' },
+      { t: dt(2026, 5, 21, 10,  0), label: 'Faro to Quarteira (bus or Uber)' },
+      { t: dt(2026, 5, 21, 11,  0), label: 'Bag drop, light breakfast at a beach cafe' },
+      { t: dt(2026, 5, 21, 11, 30), label: 'Sahil walks the Quarteira promenade' },
+      { t: dt(2026, 5, 21, 13,  0), label: "Monty's work wraps, lunch at Sailor's Corner" },
+      { t: dt(2026, 5, 21, 14, 30), label: 'Slow afternoon on Quarteira beach' },
+      { t: dt(2026, 5, 21, 15,  0), label: 'Check in to SunnyQuarters' },
+      { t: dt(2026, 5, 21, 16, 30), label: 'Pingo Doce supermarket run' },
+      { t: dt(2026, 5, 21, 18, 30), label: 'Sunset stroll along the promenade' },
+      { t: dt(2026, 5, 21, 20,  0), label: 'Dinner at Tico Tico' },
+      { t: dt(2026, 5, 21, 22,  0), label: 'Sagres on the balcony' },
+      // Friday 22 May - Day 2
+      { t: dt(2026, 5, 22,  9, 30), label: 'Breakfast at home - natas and coffee' },
+      { t: dt(2026, 5, 22, 10, 30), label: 'Walk to Vilamoura marina' },
+      { t: dt(2026, 5, 22, 11,  0), label: 'Cerro da Vila Roman ruins (Friday-only)' },
+      { t: dt(2026, 5, 22, 13,  0), label: "Lunch at the marina (Snack-bar Monteiro's)" },
+      { t: dt(2026, 5, 22, 14, 30), label: 'Beach, pool, or balcony' },
+      { t: dt(2026, 5, 22, 16, 30), label: 'Reset at the apartment' },
+      { t: dt(2026, 5, 22, 18,  0), label: 'Calm evening tasting (port or wine)' },
+      { t: dt(2026, 5, 22, 20, 30), label: 'Dinner at Casa do Pescador or Akvavit' },
+      { t: dt(2026, 5, 22, 23,  0), label: 'Walk home, terrace nightcap' },
+      // Saturday 23 May - Day 3
+      { t: dt(2026, 5, 23,  8, 30), label: 'Apartment breakfast' },
+      { t: dt(2026, 5, 23,  9, 15), label: 'Walk to Quarteira bus station' },
+      { t: dt(2026, 5, 23,  9, 30), label: 'Vamus Bus 9 to Loule' },
+      { t: dt(2026, 5, 23, 10,  0), label: 'Mercado Municipal de Loule' },
+      { t: dt(2026, 5, 23, 11, 30), label: 'Loule Castle and Archaeological Museum' },
+      { t: dt(2026, 5, 23, 12, 30), label: 'Petiscos lunch at the market stalls' },
+      { t: dt(2026, 5, 23, 14, 30), label: 'Bus 9 back to Quarteira' },
+      { t: dt(2026, 5, 23, 15, 30), label: 'Beach, balcony, or proper afternoon nap' },
+      { t: dt(2026, 5, 23, 18,  0), label: 'Sunset boat party (wildcard option)' },
+      { t: dt(2026, 5, 23, 19, 30), label: 'Dinner at Salmora Live Kitchen' },
+      { t: dt(2026, 5, 23, 21, 30), label: 'Atlantic Bar - the reliable opener' },
+      { t: dt(2026, 5, 23, 22, 30), label: "Marina bar-hop (O'Neills, Cats, MoTAO)" },
+      // Sunday 24 May - Day 4
+      { t: dt(2026, 5, 24,  0, 30), label: 'Kadoc Disco escalation (if up for it)' },
+      { t: dt(2026, 5, 24,  8, 30), label: 'Apartment breakfast, pack' },
+      { t: dt(2026, 5, 24, 10,  0), label: 'Check out, store bags' },
+      { t: dt(2026, 5, 24, 10, 30), label: 'Quarteira fish market stroll' },
+      { t: dt(2026, 5, 24, 12,  0), label: "Lunch at Sailor's Corner" },
+      { t: dt(2026, 5, 24, 14,  0), label: 'Pick up bags, terrace coffee' },
+      { t: dt(2026, 5, 24, 15,  0), label: 'Uber to Faro Airport together' },
+      { t: dt(2026, 5, 24, 15, 45), label: 'Dinner together inside FAO landside' },
+      { t: dt(2026, 5, 24, 17,  0), label: 'Monty through security' },
+      { t: dt(2026, 5, 24, 18,  0), label: 'Sahil through security' },
+      { t: dt(2026, 5, 24, 18, 55), label: "Monty's flight home (BA2663 to LGW)" },
+      { t: dt(2026, 5, 24, 20,  5), label: "Sahil's flight home (U2 8538 to LGW)" }
+    ];
+
+    function phaseFor(now) {
+      const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+      if (y < 2026 || (y === 2026 && m < 4)) return 'pretrip';
+      if (y === 2026 && m === 4) {
+        if (d < 21) return 'pretrip';
+        if (d === 21) return 'thu';
+        if (d === 22) return 'fri';
+        if (d === 23) return 'sat';
+        if (d === 24) return 'sun';
+      }
+      return 'post';
+    }
+
+    function eyebrowFor(phase) {
+      switch (phase) {
+        case 'pretrip': return 'Monty &amp; Sahil &middot; 21&ndash;24 May 2026';
+        case 'thu': return 'Day 1 &middot; Quarteira arrival';
+        case 'fri': return 'Day 2 &middot; the calm one';
+        case 'sat': return 'Day 3 &middot; the big one';
+        case 'sun': return 'Day 4 &middot; home today';
+        case 'post': return 'May 2026 &middot; that was the trip';
+      }
+      return '';
+    }
+
+    function applyPhase(phase) {
+      const p = PHASES[phase] || PHASES.pretrip;
+      const bg = document.getElementById('heroBg');
+      if (bg) bg.style.backgroundImage = 'url(' + p.img + ')';
+      heroImg.dataset.phase = phase;
+      const eye = document.getElementById('heroEyebrowText');
+      if (eye) eye.innerHTML = eyebrowFor(phase);
+    }
+
+    function nextMilestone(now) {
+      return MILESTONES.find(m => m.t.getTime() > now.getTime()) || null;
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function formatTarget(m) {
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const dn = days[m.t.getDay()];
+      return dn + ' ' + m.t.getDate() + ' May &middot; ' + pad(m.t.getHours()) + ':' + pad(m.t.getMinutes()) + ' &middot; ' + m.label;
+    }
+
+    function updateCountdown(now, phase) {
+      const cd = document.getElementById('countdown');
+      const caption = document.getElementById('cdCaption');
+      const nDays = document.getElementById('cdDays');
+      const nHrs = document.getElementById('cdHours');
+      const nMins = document.getElementById('cdMins');
+      if (!cd) return;
+
+      if (phase === 'post') {
+        cd.classList.add('post');
+        return;
+      }
+      cd.classList.toggle('during', phase !== 'pretrip');
+
+      const m = nextMilestone(now);
+      const target = m ? m.t : MILESTONES[MILESTONES.length - 1].t;
+      const ms = target.getTime() - now.getTime();
+      const total = Math.max(0, ms);
+      const d = Math.floor(total / 86400000);
+      const h = Math.floor((total % 86400000) / 3600000);
+      const mi = Math.floor((total % 3600000) / 60000);
+      if (nDays) nDays.textContent = d;
+      if (nHrs) nHrs.textContent = h;
+      if (nMins) nMins.textContent = mi;
+
+      if (caption) caption.innerHTML = m ? 'until ' + m.label.toLowerCase() : 'home soon';
+    }
+
+    function updateNextMoment(now, phase) {
+      const link = document.getElementById('nextMoment');
+      const txt = document.getElementById('nextMomentText');
+      if (!link || !txt) return;
+
+      if (phase === 'post') {
+        link.style.display = 'none';
+        return;
+      }
+      const m = nextMilestone(now);
+      if (!m) {
+        link.style.display = 'none';
+        return;
+      }
+      txt.innerHTML = formatTarget(m);
+    }
+
+    function tick() {
+      const now = new Date();
+      const phase = phaseFor(now);
+      applyPhase(phase);
+      updateCountdown(now, phase);
+      updateNextMoment(now, phase);
+    }
+
+    tick();
+    setInterval(tick, 30000);
   }

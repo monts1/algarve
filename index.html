@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Algarve · Monty &amp; Sahil · May 2026</title>
+<title>Algarve &middot; Monty &amp; Sahil &middot; May 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -25,173 +25,101 @@
   </div>
 </nav>
 
-<header class="hero" id="top">
-  <div class="hero-sun"></div>
-  <div class="wrap">
-    <div class="eyebrow">
+<header class="hero-img" id="top" data-phase="pretrip">
+  <div class="hero-img-bg" id="heroBg"></div>
+  <div class="hero-img-tint"></div>
+  <div class="wrap hero-img-content">
+    <div class="hero-eyebrow">
       <span class="pulse"></span>
-      <span>Monty &amp; Sahil &middot; 21&ndash;24 May 2026</span>
+      <span id="heroEyebrowText">Monty &amp; Sahil &middot; 21&ndash;24 May 2026</span>
     </div>
-    <h1>Algarve, <em>al fresco</em>,<br>at <span class="accent">half pace</span>.</h1>
-    <p class="lede">Three days in Quarteira and Vilamoura - sea breeze, slow mornings, one calm wine evening and one big lively night. The flat's booked, the rest is just choosing the moments.</p>
-    <div class="hero-strip">
-      <div class="item">
-        <div class="label">Where</div>
-        <div class="value">Quarteira &middot; Vilamoura</div>
+
+    <h1 class="hero-img-title">Algarve, <em>al fresco</em>,<br>at <span class="accent">half pace</span>.</h1>
+
+    <p class="hero-img-lede">Three days in Quarteira and Vilamoura. Sea breeze, slow mornings, one calm wine evening and one big lively night. The flat is booked - the rest is just choosing the moments.</p>
+
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="countdown-row">
+        <div class="cd-unit"><span class="cd-num" id="cdDays">-</span><span class="cd-label">days</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdHours">-</span><span class="cd-label">hours</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdMins">-</span><span class="cd-label">mins</span></div>
       </div>
-      <div class="item">
-        <div class="label">Sahil arrives</div>
-        <div class="value">Thu 09:10 &middot; BRS&rarr;FAO</div>
-      </div>
-      <div class="item">
-        <div class="label">Monty wraps work</div>
-        <div class="value">Thu 13:00</div>
-      </div>
-      <div class="item">
-        <div class="label">Apartment</div>
-        <div class="value">SunnyQuarters &middot; booked</div>
-      </div>
+      <div class="cd-caption" id="cdCaption">until the trip</div>
     </div>
+
+    <a class="next-moment" id="nextMoment" href="itinerary.html">
+      <span class="nm-tag">Next up</span>
+      <span class="nm-body" id="nextMomentText">Loading...</span>
+      <span class="nm-arrow">&rarr;</span>
+    </a>
   </div>
+  <a class="hero-credit" id="heroCredit" target="_blank" rel="noopener"></a>
 </header>
 
-<section class="block warm" id="gist">
+<section class="block warm" id="quickfacts">
   <div class="wrap">
-    <div class="section-head">
-      <div class="section-num">First - the shape</div>
-      <h2>What's <em>locked</em>, what's <em>chosen</em>.</h2>
-      <p class="sub">Three nights, two themed evenings, easy walks, proper food. The shape is set - the moments are yours to pick.</p>
-    </div>
-
-    <div class="gist-grid">
-      <div class="gist-card">
-        <div class="icon">&#127968;</div>
-        <h3>The flat</h3>
-        <p><strong>SunnyQuarters</strong> on Avenida S&aacute; Carneiro - booked, paid, lockbox check-in 15:00 Thu &rarr; 10:00 Sun. <mark>&pound;119.69 each.</mark></p>
-      </div>
-      <div class="gist-card">
-        <div class="icon">&#127863;</div>
-        <h3>Friday's calm</h3>
-        <p>Pick one tasting: <strong>port</strong> at Oporto Tavern or <strong>wine</strong> at Rolha a Rolha. Then a proper Portuguese dinner with a bottle.</p>
-      </div>
-      <div class="gist-card">
-        <div class="icon">&#128375;</div>
-        <h3>Saturday's lively</h3>
-        <p>Marina bar-hop with music and a young crowd. <strong>Atlantic Bar</strong> as base; more options nearby. Or the boat-party wildcard.</p>
-      </div>
-      <div class="gist-card">
-        <div class="icon">&#129517;</div>
-        <h3>Easy walks only</h3>
-        <p>Fal&eacute;sia clifftop and the Quarteira promenade - saving the legs for your proper hiking trip later.</p>
-      </div>
-      <div class="gist-card">
-        <div class="icon">&#127963;</div>
-        <h3>Friday-only thing</h3>
-        <p><strong>Cerro da Vila Roman ruins</strong> is closed weekends. Friday morning is the only window.</p>
-      </div>
-      <div class="gist-card">
-        <div class="icon">&#9992;</div>
-        <h3>The way home</h3>
-        <p>Uber to Faro together Sunday, eat dinner inside FAO before splitting. Monty 18:55 &amp; Sahil 20:05 - both into London Gatwick, 70 min apart.</p>
-      </div>
+    <div class="quickfacts-grid">
+      <a class="qf-card" href="stay.html">
+        <div class="qf-icon">&#127968;</div>
+        <div class="qf-body">
+          <div class="qf-label">The flat</div>
+          <div class="qf-value">SunnyQuarters &middot; Quarteira</div>
+          <div class="qf-meta">Booked &middot; &pound;119.69 each &middot; check-in 15:00 Thu</div>
+        </div>
+      </a>
+      <a class="qf-card" href="flights.html">
+        <div class="qf-icon">&#9992;</div>
+        <div class="qf-body">
+          <div class="qf-label">Flights</div>
+          <div class="qf-value">Both confirmed</div>
+          <div class="qf-meta">Sahil 09:10 Thu &middot; Monty already there from Tue</div>
+        </div>
+      </a>
+      <a class="qf-card" href="weather.html">
+        <div class="qf-icon">&#9728;</div>
+        <div class="qf-body">
+          <div class="qf-label">Weather</div>
+          <div class="qf-value">Live forecast</div>
+          <div class="qf-meta">16-day outlook for Quarteira, trip days marked</div>
+        </div>
+      </a>
     </div>
   </div>
 </section>
 
-<section class="block" id="stay">
+<section class="block" id="shape">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-num">The place</div>
-      <h2>SunnyQuarters &middot; <em>booked</em>.</h2>
-      <p class="sub">Two bedrooms, terrace, air-con, on Quarteira's main seafront avenue. Self check-in by lockbox.</p>
-    </div>
-    <div class="stay-card">
-      <div class="stay-card-img">
-        <img src="https://homesbyfc.com/wp-content/uploads/2025/10/42381138026c.jpg" alt="SunnyQuarters apartment" loading="lazy" />
-      </div>
-      <div class="stay-card-body">
-        <span class="pill confirmed">Booked &middot; &pound;119.69 each</span>
-        <h3>Walk-to-Beach 2BR Apartment</h3>
-        <p>Avenida Francisco S&aacute; Carneiro 1E &middot; Conf. <strong>HMA8NNMCQ2</strong><br>Self check-in by lockbox from 15:00 Thu. Check out 10:00 Sun. Message Homesbyfc the day before for the code.</p>
-        <div class="venue-actions" style="margin-top: 8px;">
-          <a class="btn primary" href="stay.html">Full details</a>
-          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Avenida+Francisco+S%C3%A1+Carneiro+1E+Quarteira" target="_blank" rel="noopener">Maps</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block sand" id="flights">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-num">In and out</div>
-      <h2>The <em>flights</em>.</h2>
-      <p class="sub">Both confirmed. Click any flight card to track it on FlightRadar24.</p>
+      <div class="section-num">The shape</div>
+      <h2>Two themed evenings, easy days between.</h2>
+      <p class="sub">The big rocks are set. Inside each one there's still a choice to make.</p>
     </div>
 
-    <div class="venue-list">
-      <div class="venue">
-        <div class="venue-head">
-          <div>
-            <div class="venue-name">Sahil - easyJet</div>
-            <div class="venue-meta">Bristol &harr; Faro &middot; Both legs Airbus A320 &middot; Economy</div>
-          </div>
-          <span class="pill confirmed">Confirmed</span>
+    <div class="gist-grid gist-grid-3">
+      <a class="gist-card-link" href="calm.html">
+        <div class="gist-card">
+          <div class="icon">&#127863;</div>
+          <h3>Friday calm</h3>
+          <p>Pick one tasting: <strong>port</strong> at Oporto Tavern or <strong>wine</strong> at Rolha a Rolha. Then a proper Portuguese dinner with a bottle.</p>
+          <span class="gist-arrow">Plan the calm night &rarr;</span>
         </div>
-        <div class="flight-cards">
-          <a class="flight-card-link" href="https://www.flightradar24.com/data/flights/u22873" target="_blank" rel="noopener">
-            <div class="flight-card out">
-              <div class="leg-label">Out &middot; Thu 21 May</div>
-              <div class="leg-time">06:30 BRS &rarr; 09:10 FAO</div>
-              <div class="leg-detail">U2 2873 &middot; 2h 40m &middot; Direct</div>
-            </div>
-          </a>
-          <a class="flight-card-link" href="https://www.flightradar24.com/data/flights/u28538" target="_blank" rel="noopener">
-            <div class="flight-card back">
-              <div class="leg-label">Back &middot; Sun 24 May</div>
-              <div class="leg-time">20:05 FAO &rarr; 22:55 LGW</div>
-              <div class="leg-detail">U2 8538 &middot; 2h 50m &middot; Direct to Gatwick</div>
-            </div>
-          </a>
+      </a>
+      <a class="gist-card-link" href="lively.html">
+        <div class="gist-card">
+          <div class="icon">&#128375;</div>
+          <h3>Saturday lively</h3>
+          <p>Marina bar-hop with music and a young crowd. <strong>Atlantic Bar</strong> as base; Kadoc later if it's still on. Boat-party wildcard.</p>
+          <span class="gist-arrow">Plan the lively night &rarr;</span>
         </div>
-        <div class="venue-body" style="margin-top: 8px;">
-          Out of Bristol, back into Gatwick. Sort transport from Gatwick home in advance.
+      </a>
+      <a class="gist-card-link" href="walks.html">
+        <div class="gist-card">
+          <div class="icon">&#129517;</div>
+          <h3>Walks &amp; daytime</h3>
+          <p>Fal&eacute;sia clifftop, Quarteira promenade, Cerro da Vila ruins (Friday only - closed weekends). Saving your legs for the proper trip later.</p>
+          <span class="gist-arrow">See the daytime &rarr;</span>
         </div>
-      </div>
-
-      <div class="venue">
-        <div class="venue-head">
-          <div>
-            <div class="venue-name">Monty - British Airways</div>
-            <div class="venue-meta">London Gatwick &harr; Faro &middot; With the work crew on the outbound</div>
-          </div>
-          <span class="pill confirmed">Confirmed</span>
-        </div>
-        <div class="flight-cards">
-          <a class="flight-card-link" href="https://www.flightradar24.com/data/flights/ba2660" target="_blank" rel="noopener">
-            <div class="flight-card out">
-              <div class="leg-label">Out &middot; Tue 19 May</div>
-              <div class="leg-time">LGW &rarr; 11:50 FAO</div>
-              <div class="leg-detail">BA2660 &middot; Hyatt Tue/Wed with work</div>
-            </div>
-          </a>
-          <a class="flight-card-link" href="https://www.flightradar24.com/data/flights/ba2663" target="_blank" rel="noopener">
-            <div class="flight-card back">
-              <div class="leg-label">Back &middot; Sun 24 May</div>
-              <div class="leg-time">18:55 FAO &rarr; LGW</div>
-              <div class="leg-detail">BA2663 &middot; arrive Gatwick ~21:55</div>
-            </div>
-          </a>
-        </div>
-        <div class="venue-body" style="margin-top: 8px;">
-          Already there with work Tue/Wed. <strong>Thursday 13:00 work wraps</strong>, then it's a real duo holiday.
-        </div>
-      </div>
-    </div>
-
-    <div class="note cool" style="margin-top: 56px;">
-      <strong>Sunday plan:</strong> Uber together to Faro Airport around 15:00 (~&euro;25 split, &euro;12.50 each). Sit-down dinner inside FAO landside, then split for your flights. ~70 minutes between gates.
+      </a>
     </div>
   </div>
 </section>
@@ -199,9 +127,9 @@
 <section class="block warm" id="explore">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-num">Navigate the trip</div>
-      <h2>Everything <em>planned</em>.</h2>
-      <p class="sub">Each section has full venue details, photos, good-to-knows and maps.</p>
+      <div class="section-num">Everything else</div>
+      <h2>Navigate the <em>trip</em>.</h2>
+      <p class="sub">Each section has venue details, photos, good-to-knows and maps.</p>
     </div>
 
     <div class="explore-grid">
@@ -211,29 +139,23 @@
         <p>All four days broken down hour by hour. Timings, costs, options and notes.</p>
         <div class="ec-arrow">Plan the days &rarr;</div>
       </a>
-      <a class="explore-card" href="calm.html">
-        <div class="ec-icon">&#127863;</div>
-        <h3>Friday calm</h3>
-        <p>Port tasting at Oporto Tavern or structured wine at Rolha a Rolha. Pick one.</p>
-        <div class="ec-arrow">The calm night &rarr;</div>
-      </a>
-      <a class="explore-card" href="lively.html">
-        <div class="ec-icon">&#127926;</div>
-        <h3>Saturday lively</h3>
-        <p>Atlantic Bar, the marina bar-hop, Kadoc escalation, or the sunset boat party wildcard.</p>
-        <div class="ec-arrow">The lively night &rarr;</div>
-      </a>
-      <a class="explore-card" href="walks.html">
-        <div class="ec-icon">&#127774;</div>
-        <h3>Walks &amp; daytime</h3>
-        <p>Fal&eacute;sia cliffs, Cerro da Vila ruins, Loul&eacute; market, the Calçadão promenade.</p>
-        <div class="ec-arrow">Explore the days &rarr;</div>
-      </a>
       <a class="explore-card" href="eat.html">
         <div class="ec-icon">&#127963;</div>
         <h3>Where to eat</h3>
         <p>Three dinners, three moods - traditional Portuguese, modern tapas, and the marina classics.</p>
         <div class="ec-arrow">Find a table &rarr;</div>
+      </a>
+      <a class="explore-card" href="stay.html">
+        <div class="ec-icon">&#127968;</div>
+        <h3>The apartment</h3>
+        <p>SunnyQuarters on Avenida Sa Carneiro - photos, lockbox, terrace, the lot.</p>
+        <div class="ec-arrow">See the flat &rarr;</div>
+      </a>
+      <a class="explore-card" href="flights.html">
+        <div class="ec-icon">&#9992;</div>
+        <h3>Flights</h3>
+        <p>Both legs with live FlightRadar24 tracking. Sunday return plan included.</p>
+        <div class="ec-arrow">Track flights &rarr;</div>
       </a>
       <a class="explore-card" href="phrases.html">
         <div class="ec-icon">&#127477;&#127481;</div>

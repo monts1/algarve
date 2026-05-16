@@ -1639,20 +1639,8 @@
   }
   .next-moment:hover .nm-arrow { transform: translateX(4px); }
 
-  /* Hero photo credit */
-  .hero-credit {
-    position: absolute;
-    bottom: 14px;
-    right: 18px;
-    font-size: 11px;
-    color: rgba(250, 243, 224, 0.55);
-    text-decoration: none;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    z-index: 1;
-  }
-  .hero-credit:hover { color: rgba(250, 243, 224, 0.9); }
-  .hero-credit:empty { display: none; }
+  /* Hero photo credit - hidden for personal use */
+  .hero-credit { display: none; }
 
   @media (max-width: 760px) {
     .hero-img { min-height: 88vh; padding: 120px 0 64px; }
