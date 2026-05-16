@@ -409,8 +409,12 @@
     };
     const FREE = 12;
     const LS_KEY = 'algarve-bingo-v2';
-    const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019e31ea-6757-7be4-b7d0-3b494f669be1';
     const POLL_MS = 8000;
+    const cfg = (typeof CONFIG !== 'undefined') ? CONFIG : {};
+    const SYNC_ENABLED = !!(cfg.JSONBIN_KEY && cfg.JSONBIN_BIN_ID);
+    const READ_URL = SYNC_ENABLED ? `https://api.jsonbin.io/v3/b/${cfg.JSONBIN_BIN_ID}/latest` : null;
+    const WRITE_URL = SYNC_ENABLED ? `https://api.jsonbin.io/v3/b/${cfg.JSONBIN_BIN_ID}` : null;
+    const SYNC_HEADERS = SYNC_ENABLED ? { 'X-Access-Key': cfg.JSONBIN_KEY } : null;
 
     let active = 'realistic';
     let state = {
@@ -462,10 +466,12 @@
     }
 
     async function pullState() {
+      if (!SYNC_ENABLED) { setSync('This device only', 'error'); return; }
       try {
-        const r = await fetch(BLOB_URL, { cache: 'no-store' });
+        const r = await fetch(READ_URL, { cache: 'no-store', headers: SYNC_HEADERS });
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const remote = normalise(await r.json());
+        const body = await r.json();
+        const remote = normalise(body && body.record);
         if (remote) {
           state = remote;
           saveLocal();
@@ -480,15 +486,16 @@
     let pushTimer = null;
     let pushing = false;
     function pushState() {
+      if (!SYNC_ENABLED) return;
       clearTimeout(pushTimer);
       setSync('Saving...');
       pushTimer = setTimeout(async () => {
         if (pushing) { pushTimer = setTimeout(pushState, 200); return; }
         pushing = true;
         try {
-          const r = await fetch(BLOB_URL, {
+          const r = await fetch(WRITE_URL, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: Object.assign({ 'Content-Type': 'application/json' }, SYNC_HEADERS),
             body: JSON.stringify(state)
           });
           if (!r.ok) throw new Error('HTTP ' + r.status);

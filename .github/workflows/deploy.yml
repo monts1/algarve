@@ -16,7 +16,9 @@ jobs:
         run: |
           cat > config.js << 'EOF'
           const CONFIG = {
-            ACCUWEATHER_KEY: '${{ secrets.ACCUWEATHER_KEY }}'
+            ACCUWEATHER_KEY: '${{ secrets.ACCUWEATHER_KEY }}',
+            JSONBIN_KEY: '${{ secrets.JSONBIN_KEY }}',
+            JSONBIN_BIN_ID: '6a08ba47adc21f119aadbd75'
           };
           EOF
 
