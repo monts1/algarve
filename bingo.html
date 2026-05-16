@@ -29,13 +29,19 @@
   <div class="wrap">
     <a class="page-back" href="index.html">&#8592; Home</a>
     <h1>Trip <em>bingo</em>.</h1>
-    <p class="lede">25 things that could happen on a lads trip to the Algarve. Tap a square when it happens. Progress saves automatically - no excuses.</p>
+    <p class="lede">Two cards. Tap a square when it happens - progress syncs across everyone's phones in real time.</p>
   </div>
 </header>
 
 <section class="block sand">
   <div class="wrap">
     <div class="bingo-wrap">
+
+      <div class="bingo-tabs" role="tablist">
+        <button class="bingo-tab active" data-card="realistic" role="tab">Realistic</button>
+        <button class="bingo-tab" data-card="fun" role="tab">Fun</button>
+        <span class="bingo-sync" id="bingo-sync">Syncing...</span>
+      </div>
 
       <div class="bingo-header">
         <div class="bingo-letter">B</div>
@@ -53,7 +59,7 @@
       </div>
 
       <div class="bingo-controls">
-        <button class="btn secondary" id="bingo-reset">Reset card</button>
+        <button class="btn secondary" id="bingo-reset">Reset this card</button>
       </div>
 
     </div>
