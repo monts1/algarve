@@ -1,0 +1,28 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate config.js with secret
+        run: |
+          cat > config.js << 'EOF'
+          const CONFIG = {
+            ACCUWEATHER_KEY: '${{ secrets.ACCUWEATHER_KEY }}'
+          };
+          EOF
+
+      - name: Commit and push config.js
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add config.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Generated config.js [skip ci]" && git push)

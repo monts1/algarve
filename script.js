@@ -140,7 +140,7 @@
   if (weatherGrid) {
     const LAT = 37.07, LON = -8.10;
     const LOCATION_KEY = '273215'; // Quarteira, Portugal
-    const ACC_KEY = 'zpka_adf498a2165840ddaae9a31e6ba99cd5_f19ac6bb';
+    const ACC_KEY = (typeof CONFIG !== 'undefined' && CONFIG.ACCUWEATHER_KEY) || '';
     const TRIP = new Set(['2026-05-21', '2026-05-22', '2026-05-23', '2026-05-24']);
 
     function accuFetch(path) {
