@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Algarve">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Algarve · May 2026">
 <meta property="og:title" content="Weather · Algarve May '26">
@@ -53,7 +57,20 @@
       <strong>May average:</strong> Highs around 24-26&deg;C, sunny with low chance of rain. The Algarve gets around 300 days of sun per year - May is one of the best months. Evenings are warm but bring a light layer for the marina.
     </div>
 
-    <div id="weather-loading">Loading forecast&hellip;</div>
+    <div id="weather-loading" class="weather-skeleton" aria-hidden="true">
+      <div class="skeleton-rain"></div>
+      <div class="skeleton-rows">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row trip"></div>
+        <div class="skeleton-row trip"></div>
+        <div class="skeleton-row trip"></div>
+        <div class="skeleton-row trip"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+    </div>
     <div id="weather-grid" style="display:none;"></div>
     <div id="weather-error" style="display:none;">
       <p>Could not load the forecast right now. <a href="https://www.bbc.co.uk/weather/2267057" target="_blank" rel="noopener" style="color:var(--terracotta)">Check BBC Weather for Quarteira &rarr;</a></p>

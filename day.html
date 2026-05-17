@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Algarve">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Algarve · May 2026">
+<meta property="og:title" content="Today in the Algarve">
+<meta property="og:description" content="One day at a glance - Monty & Sahil's Algarve trip, May 2026.">
+<meta property="og:image" content="https://montyburrows.github.io/algarve/img/boatparty-1.jpg">
+<meta property="og:url" content="https://montyburrows.github.io/algarve/day.html">
+<meta name="twitter:card" content="summary_large_image">
+<title>Day &middot; Algarve May '26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#1a4870">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-dot"></span>Algarve &middot; May '26</a>
+    <ul>
+      <li><a href="itinerary.html">Days</a></li>
+      <li><a href="map.html">Map</a></li>
+      <li><a href="calm.html">Calm</a></li>
+      <li><a href="lively.html">Lively</a></li>
+      <li><a href="walks.html">Walks</a></li>
+      <li><a href="eat.html">Eat</a></li>
+      <li><a href="phrases.html">Phrases</a></li>
+      <li class="nav-bingo"><a href="bingo.html">Bingo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <a class="page-back" href="itinerary.html">&#8592; Full itinerary</a>
+    <div class="day-eyebrow" id="dayEyebrow">Today</div>
+    <h1 id="dayHeading">Loading...</h1>
+    <p class="lede" id="daySubhead"></p>
+
+    <div class="day-quick-actions">
+      <div class="day-jumps" id="dayJumps"></div>
+      <div class="day-share-row">
+        <button class="btn primary" id="shareBtn">Share this day</button>
+        <button class="btn secondary" id="copyBtn">Copy link</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="block" style="padding-top: 40px;">
+  <div class="wrap">
+    <div id="dayContent" class="day-standalone">
+      <div class="day-skeleton" aria-hidden="true">
+        <div class="skel-line skel-eyebrow"></div>
+        <div class="skel-line skel-row long"></div>
+        <div class="skel-line skel-row med"></div>
+        <div class="skel-line skel-row short"></div>
+        <div class="skel-spacer"></div>
+        <div class="skel-line skel-eyebrow"></div>
+        <div class="skel-line skel-row med"></div>
+        <div class="skel-line skel-row long"></div>
+        <div class="skel-spacer"></div>
+        <div class="skel-line skel-eyebrow"></div>
+        <div class="skel-line skel-row short"></div>
+        <div class="skel-line skel-row long"></div>
+        <div class="skel-line skel-row med"></div>
+      </div>
+    </div>
+    <div id="dayError" class="note" style="display: none;">
+      <strong>Day not found.</strong> Pick one of: <a href="day.html?d=thu">Thu</a> &middot;
+      <a href="day.html?d=fri">Fri</a> &middot;
+      <a href="day.html?d=sat">Sat</a> &middot;
+      <a href="day.html?d=sun">Sun</a>.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signoff">Boa viagem, rapazes.</div>
+    <div class="total-flex">Sun, sea, port at sunset, a Saturday on the marina.</div>
+    <div class="meta">Quarteira &middot; Vilamoura &middot; Algarve &middot; 21 - 24 May 2026</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+<script>
+  // Map of short alias -> ISO date
+  const ALIAS = {
+    thu: '2026-05-21',
+    fri: '2026-05-22',
+    sat: '2026-05-23',
+    sun: '2026-05-24'
+  };
+  const ISO_TO_ALIAS = Object.fromEntries(Object.entries(ALIAS).map(([k, v]) => [v, k]));
+  const TRIP_DATES = Object.values(ALIAS);
+
+  function resolveDate() {
+    const params = new URLSearchParams(window.location.search);
+    let d = params.get('d');
+    if (d) {
+      const lc = d.toLowerCase();
+      if (ALIAS[lc]) return ALIAS[lc];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    }
+    // Default: today if it's a trip date, otherwise Thursday
+    const todayIso = new Date().toISOString().slice(0, 10);
+    return TRIP_DATES.includes(todayIso) ? todayIso : TRIP_DATES[0];
+  }
+
+  const targetDate = resolveDate();
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const isToday = targetDate === todayIso;
+
+  // Update page heading + eyebrow
+  function renderHeader(article) {
+    const titleHtml = article.querySelector('.day-title')?.innerHTML || '';
+    const dateLabel = article.querySelector('.day-date')?.textContent || '';
+    const numLabel = article.querySelector('.day-num-label')?.textContent || '';
+
+    document.getElementById('dayEyebrow').textContent = isToday ? 'Today' : numLabel || dateLabel.split(' · ')[0];
+    document.getElementById('dayHeading').innerHTML = titleHtml;
+    document.getElementById('daySubhead').textContent = dateLabel;
+    document.title = `${dateLabel} · Algarve May '26`;
+  }
+
+  // Render the day content (timeline + notes, no toggle button)
+  function renderBody(article) {
+    const body = article.querySelector('.day-body-inner');
+    if (!body) {
+      showError();
+      return;
+    }
+    const container = document.getElementById('dayContent');
+    container.innerHTML = '';
+    const clone = body.cloneNode(true);
+    container.appendChild(clone);
+  }
+
+  // Build quick-jump chips to related section pages
+  function renderJumps() {
+    const jumps = {
+      '2026-05-21': [['Walks', 'walks.html'], ['Eat', 'eat.html'], ['Stay', 'stay.html']],
+      '2026-05-22': [['Calm', 'calm.html'], ['Walks', 'walks.html'], ['Eat', 'eat.html']],
+      '2026-05-23': [['Lively', 'lively.html'], ['Walks', 'walks.html'], ['Eat', 'eat.html']],
+      '2026-05-24': [['Walks', 'walks.html'], ['Map', 'map.html'], ['Flights', 'flights.html']]
+    };
+    const list = jumps[targetDate] || [];
+    const container = document.getElementById('dayJumps');
+    container.innerHTML = list.map(([label, href]) => `<a class="day-jump" href="${href}">${label}</a>`).join('');
+  }
+
+  function showError() {
+    document.getElementById('dayContent').style.display = 'none';
+    document.getElementById('dayError').style.display = '';
+    document.getElementById('dayHeading').textContent = 'Day not found';
+    document.getElementById('daySubhead').textContent = '';
+  }
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  function shareUrl() {
+    const alias = ISO_TO_ALIAS[targetDate];
+    const base = window.location.origin + window.location.pathname.replace(/day\.html$/, 'day.html');
+    return alias ? `${base}?d=${alias}` : `${base}?d=${targetDate}`;
+  }
+
+  // Fetch itinerary, extract just this day
+  fetch('itinerary.html')
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const article = doc.querySelector(`article.day[data-date="${targetDate}"]`);
+      if (!article) {
+        showError();
+        return;
+      }
+      renderHeader(article);
+      renderBody(article);
+      renderJumps();
+    })
+    .catch(err => {
+      console.warn('Failed to load day:', err);
+      showError();
+    });
+
+  // Share / copy buttons
+  document.getElementById('shareBtn').addEventListener('click', async () => {
+    const url = shareUrl();
+    const dateLabel = document.getElementById('daySubhead').textContent || 'a day';
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Algarve - ${dateLabel}`,
+          text: `Today's plan: ${dateLabel}`,
+          url
+        });
+      } catch (e) { /* user cancelled */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast('Link copied');
+      } catch (e) {
+        prompt('Copy this link:', url);
+      }
+    }
+  });
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const url = shareUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      toast('Link copied');
+    } catch (e) {
+      prompt('Copy this link:', url);
+    }
+  });
+</script>
+</body>
+</html>

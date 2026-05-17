@@ -1,4 +1,25 @@
 
+  // ── Haptic feedback (Android only - iOS Safari does not support Vibration API) ──
+  const hapticOK = 'vibrate' in navigator;
+  window.haptic = function (kind) {
+    if (!hapticOK) return;
+    // Patterns chosen to feel like iOS UIImpactFeedback equivalents on Android
+    const patterns = {
+      tap: 8,        // selection / standard tap
+      pop: 14,       // button confirm
+      success: [10, 40, 10],
+      warning: [20, 30, 20],
+      heavy: 22      // important action (PTR cross, bingo cell mark)
+    };
+    try { navigator.vibrate(patterns[kind] || patterns.tap); } catch (_) {}
+  };
+
+  // Apply tap haptic globally to interactive elements via a single delegated handler
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('.tabbar-item, .btn, .map-chip, .day-jump, .bingo-cell, .day-card-share, .mlr-dir, .bingo-tab, .nav-mobile a');
+    if (el) window.haptic(el.classList.contains('bingo-cell') ? 'heavy' : 'tap');
+  }, { capture: true });
+
   // ── Service worker: offline support ─────────────────────────────
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -23,24 +44,17 @@
       if (href === currentPage) a.classList.add('active');
     });
 
-    // Mobile menu: inject hamburger button + slide-down panel
-    const navInner = topNav.querySelector('.nav-inner');
+    // Mobile menu: inject slide-down panel (no hamburger - the bottom tab bar Menu opens it)
     const desktopUl = topNav.querySelector('ul');
-    if (navInner && desktopUl) {
-      const burger = document.createElement('button');
-      burger.className = 'nav-burger';
-      burger.setAttribute('aria-label', 'Menu');
-      burger.setAttribute('aria-expanded', 'false');
-      burger.innerHTML = '<span></span><span></span><span></span>';
-      navInner.appendChild(burger);
+    const inVenuesFolder = window.location.pathname.includes('/venues/');
+    const pathPrefix = inVenuesFolder ? '../' : '';
 
+    if (desktopUl) {
       const panel = document.createElement('div');
       panel.className = 'nav-mobile';
       panel.setAttribute('aria-hidden', 'true');
-      // Clone link list so we have an independent mobile copy
       const mobileUl = desktopUl.cloneNode(true);
-      // Fix relative paths if we're in a subfolder (e.g. venues/)
-      if (window.location.pathname.includes('/venues/')) {
+      if (inVenuesFolder) {
         mobileUl.querySelectorAll('a').forEach(a => {
           const href = a.getAttribute('href');
           if (href && !href.startsWith('/') && !href.startsWith('http') && !href.startsWith('../')) {
@@ -53,19 +67,62 @@
 
       const setOpen = (open) => {
         topNav.classList.toggle('menu-open', open);
-        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
       };
-      burger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setOpen(!topNav.classList.contains('menu-open'));
-      });
       panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
       document.addEventListener('click', (e) => {
-        if (topNav.classList.contains('menu-open') && !topNav.contains(e.target)) setOpen(false);
+        if (topNav.classList.contains('menu-open') && !topNav.contains(e.target) && !e.target.closest('.tabbar-item')) {
+          setOpen(false);
+        }
       });
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && topNav.classList.contains('menu-open')) setOpen(false);
+      });
+      // Expose toggle so the bottom tab bar can drive it
+      window._toggleMobileMenu = (force) => setOpen(force !== undefined ? force : !topNav.classList.contains('menu-open'));
+    }
+
+    // Bottom tab bar - mobile only, primary navigation
+    const TABS = [
+      { id: 'today', label: 'Today', href: pathPrefix + 'day.html', match: ['day.html', 'index.html'], icon:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+      },
+      { id: 'days', label: 'Days', href: pathPrefix + 'itinerary.html', match: ['itinerary.html'], icon:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>'
+      },
+      { id: 'map', label: 'Map', href: pathPrefix + 'map.html', match: ['map.html'], icon:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-7.58 8-13a8 8 0 0 0-16 0c0 5.42 8 13 8 13Z"/><circle cx="12" cy="9" r="2.5"/></svg>'
+      },
+      { id: 'eat', label: 'Eat', href: pathPrefix + 'eat.html', match: ['eat.html'], icon:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg>'
+      },
+      { id: 'menu', label: 'Menu', href: '#', match: [], icon:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>'
+      }
+    ];
+
+    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+    const tabbar = document.createElement('nav');
+    tabbar.className = 'tabbar';
+    tabbar.setAttribute('aria-label', 'Primary');
+    tabbar.innerHTML = TABS.map(t => {
+      const active = t.match.includes(currentFile) ? ' active' : '';
+      const isMenu = t.id === 'menu';
+      const tag = isMenu ? 'button' : 'a';
+      const hrefAttr = isMenu ? '' : ` href="${t.href}"`;
+      return `<${tag} class="tabbar-item${active}" data-tab="${t.id}"${hrefAttr}${isMenu ? ' type="button"' : ''}>
+        <span class="tabbar-icon">${t.icon}</span>
+        <span class="tabbar-label">${t.label}</span>
+      </${tag}>`;
+    }).join('');
+    document.body.appendChild(tabbar);
+
+    const menuBtn = tabbar.querySelector('[data-tab="menu"]');
+    if (menuBtn) {
+      menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (window._toggleMobileMenu) window._toggleMobileMenu();
+        menuBtn.classList.toggle('active', topNav.classList.contains('menu-open'));
       });
     }
   }
@@ -114,6 +171,101 @@
       if (e.key === 'ArrowRight') nextImg();
       if (e.key === 'ArrowLeft') prevImg();
     });
+
+    // Swipe-down-to-dismiss on the mobile bottom-sheet variant
+    const lbSheet = lightbox.querySelector('.lb-content');
+    if (lbSheet) {
+      let startY = 0, deltaY = 0, dragging = false;
+      lbSheet.addEventListener('touchstart', (e) => {
+        if (window.innerWidth > 760) return;
+        startY = e.touches[0].clientY;
+        deltaY = 0;
+        dragging = true;
+        lbSheet.style.transition = 'none';
+      }, { passive: true });
+      lbSheet.addEventListener('touchmove', (e) => {
+        if (!dragging) return;
+        deltaY = e.touches[0].clientY - startY;
+        if (deltaY > 0) {
+          lbSheet.style.transform = `translateY(${deltaY}px)`;
+          lightbox.style.background = `rgba(13, 46, 74, ${Math.max(0.3, 0.95 - deltaY / 600)})`;
+        }
+      }, { passive: true });
+      lbSheet.addEventListener('touchend', () => {
+        if (!dragging) return;
+        dragging = false;
+        lbSheet.style.transition = '';
+        lightbox.style.background = '';
+        if (deltaY > 120) {
+          if (window.haptic) window.haptic('pop');
+          closeLightbox();
+          setTimeout(() => { lbSheet.style.transform = ''; }, 320);
+        } else {
+          lbSheet.style.transform = '';
+        }
+      });
+    }
+  }
+
+  // ── Pull-to-refresh (mobile, on data-heavy pages) ───────────────
+  if (document.getElementById('weather-grid') || document.getElementById('bingo-board')) {
+    if (window.matchMedia('(max-width: 920px)').matches && 'ontouchstart' in window) {
+      const ind = document.createElement('div');
+      ind.className = 'ptr-indicator';
+      ind.innerHTML = '<div class="ptr-spinner"></div>';
+      document.body.appendChild(ind);
+
+      let startY = 0, pulled = 0, dragging = false, refreshing = false;
+      const THRESHOLD = 70;
+      const MAX_PULL = 110;
+
+      const onStart = (e) => {
+        if (refreshing || window.scrollY > 0) return;
+        startY = e.touches[0].clientY;
+        pulled = 0;
+        dragging = true;
+        ind.style.transition = 'none';
+      };
+      const onMove = (e) => {
+        if (!dragging) return;
+        if (window.scrollY > 0) { dragging = false; ind.style.transform = ''; return; }
+        const delta = e.touches[0].clientY - startY;
+        if (delta <= 0) { pulled = 0; ind.style.transform = ''; ind.style.opacity = ''; ind.classList.remove('ready'); return; }
+        // Damped translation for natural feel
+        const wasReady = ind.classList.contains('ready');
+        pulled = Math.min(delta * 0.55, MAX_PULL);
+        ind.style.transform = `translateX(-50%) translateY(${pulled}px)`;
+        ind.style.opacity = Math.min(pulled / 40, 1);
+        const ready = pulled >= THRESHOLD;
+        ind.classList.toggle('ready', ready);
+        if (ready && !wasReady && window.haptic) window.haptic('heavy');
+      };
+      const onEnd = () => {
+        if (!dragging) return;
+        dragging = false;
+        ind.style.transition = '';
+        if (pulled >= THRESHOLD) {
+          refreshing = true;
+          ind.classList.add('refreshing');
+          ind.classList.remove('ready');
+          ind.style.transform = `translateX(-50%) translateY(${THRESHOLD}px)`;
+          // Use view transition if available for a smoother reload feel
+          if (document.startViewTransition) {
+            setTimeout(() => location.reload(), 250);
+          } else {
+            setTimeout(() => location.reload(), 250);
+          }
+        } else {
+          ind.style.transform = '';
+          ind.style.opacity = '';
+        }
+      };
+
+      document.addEventListener('touchstart', onStart, { passive: true });
+      document.addEventListener('touchmove', onMove, { passive: true });
+      document.addEventListener('touchend', onEnd);
+      document.addEventListener('touchcancel', onEnd);
+    }
   }
 
   // ── Accordion (day dropdowns) ───────────────────────────────────
@@ -129,6 +281,64 @@
     if (day.dataset.date === today) {
       day.classList.remove('collapsed');
     }
+  });
+
+  // Inject "Share this day" / "Open as standalone view" footer into each day card.
+  // Uses Web Share API on mobile, falls back to clipboard.
+  const DAY_ALIAS = {
+    '2026-05-21': 'thu', '2026-05-22': 'fri', '2026-05-23': 'sat', '2026-05-24': 'sun'
+  };
+  function dayToast(msg) {
+    let el = document.getElementById('toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'toast';
+      el.className = 'toast';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+  }
+  document.querySelectorAll('.day[data-date]').forEach(day => {
+    const inner = day.querySelector('.day-body-inner');
+    if (!inner || inner.querySelector('.day-card-actions')) return;
+    const date = day.dataset.date;
+    const alias = DAY_ALIAS[date] || date;
+    const title = day.querySelector('.day-title')?.textContent.trim() || 'Day';
+    const dateLabel = day.querySelector('.day-date')?.textContent.trim() || '';
+    const standalone = `day.html?d=${alias}`;
+    const wrap = document.createElement('div');
+    wrap.className = 'day-card-actions';
+    wrap.innerHTML = `
+      <a class="day-card-link" href="${standalone}">Open as single-day view &rarr;</a>
+      <button class="day-card-share" type="button" aria-label="Share this day">
+        <span class="dcs-icon">&#10150;</span><span>Share</span>
+      </button>
+    `;
+    inner.appendChild(wrap);
+    wrap.querySelector('.day-card-share').addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const url = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + standalone;
+      const shareData = {
+        title: `Algarve - ${dateLabel}`,
+        text: `${title} (${dateLabel})`,
+        url
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch (_) { /* cancelled */ }
+      } else {
+        try {
+          await navigator.clipboard.writeText(url);
+          dayToast('Link copied');
+        } catch (_) {
+          prompt('Copy this link:', url);
+        }
+      }
+    });
   });
 
   // ── Translator ──────────────────────────────────────────────────
