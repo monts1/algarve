@@ -21,7 +21,7 @@
   }, { capture: true });
 
   // ── App version - keep in sync with VERSION constant at top of sw.js ──
-  const APP_VERSION = 'v17';
+  const APP_VERSION = 'v18';
 
   // ── Service worker: offline support + auto-update on new deploys ────
   // When a new SW activates we reload the page automatically so users
@@ -1214,9 +1214,7 @@
   const packContent = document.getElementById('pack-content');
   if (packContent) {
     const PACK_LS_KEY = 'algarve-packing-v1';
-    const PACK_ACTIVE_MS = 1000;
-    const PACK_IDLE_MS = 15000;
-    const PACK_ACTIVE_WINDOW_MS = 30000;
+    const PACK_POLL_MS = 60000;
     const pCfg = (typeof CONFIG !== 'undefined') ? CONFIG : {};
     const PACK_BIN_ID = pCfg.JSONBIN_PACKING_BIN_ID;
     const PACK_SYNC_ENABLED = !!(pCfg.JSONBIN_PACKING_KEY && PACK_BIN_ID);
@@ -1563,9 +1561,6 @@
       return out;
     }
 
-    let lastActivity = 0;
-    function bump() { lastActivity = Date.now(); }
-
     async function fetchRemoteRecord() {
       const r = await fetch(PACK_READ_URL, { cache: 'no-store', headers: PACK_HEADERS });
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1579,7 +1574,6 @@
       try {
         const record = await fetchRemoteRecord();
         const remote = normalise(record);
-        const before = JSON.stringify(state);
         if (remote) {
           state = mergeState(state, remote);
         }
@@ -1601,7 +1595,6 @@
           saveLocal();
           render();
         }
-        if (JSON.stringify(state) !== before) bump();
         setSync('Synced', 'ok');
       } catch (e) {
         setSync('Offline - this device only', 'error');
@@ -1743,6 +1736,16 @@
         renderSummary();
         return;
       }
+      // Likewise, keep add-item drafts intact while background sync is polling.
+      const addInput = document.activeElement && document.activeElement.closest
+        ? document.activeElement.closest('.pack-add-input')
+        : null;
+      const hasAddDraft = Array.from(packContent.querySelectorAll('.pack-add-input'))
+        .some(input => input.value.trim());
+      if (addInput || hasAddDraft) {
+        renderSummary();
+        return;
+      }
       // Body tint for active person
       document.body.classList.toggle('pack-monty', active === 'monty');
       document.body.classList.toggle('pack-sahil', active === 'sahil');
@@ -1767,7 +1770,6 @@
       item.ts = Date.now();
       saveLocal();
       render();
-      bump();
       pushState();
       if (window.haptic) window.haptic(item.state === 'packed' ? 'success' : 'tap');
     }
@@ -1816,7 +1818,6 @@
           item.ts = Date.now();
           saveLocal();
           render();
-          bump();
           pushState();
         });
       });
@@ -1842,7 +1843,6 @@
           }
           saveLocal();
           render();
-          bump();
           pushState();
         });
       });
@@ -1868,7 +1868,6 @@
           input.value = '';
           saveLocal();
           render();
-          bump();
           pushState();
         };
         btn.addEventListener('click', commit);
@@ -1923,7 +1922,6 @@
             state[active].items = dedupeItems(state[active].items, 'personal');
           }
           saveLocal();
-          bump();
           pushState();
         }
         // Re-render to restore the span (with new or original text)
@@ -1960,7 +1958,6 @@
         state[active].items.forEach(item => clearDeleteMarkers(item, active));
         saveLocal();
         render();
-        bump();
         pushState();
       });
     }
@@ -1969,30 +1966,26 @@
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => {
         setSync('Syncing...');
-        bump();
         pullState();
       });
     }
 
     loadLocal();
     render();
-    bump();
     pullState();
 
     let packPollTimer = null;
     function schedulePackPoll() {
       clearTimeout(packPollTimer);
-      const interval = (Date.now() - lastActivity < PACK_ACTIVE_WINDOW_MS) ? PACK_ACTIVE_MS : PACK_IDLE_MS;
       packPollTimer = setTimeout(async () => {
         if (document.visibilityState === 'visible' && !pushing) await pullState();
         schedulePackPoll();
-      }, interval);
+      }, PACK_POLL_MS);
     }
     schedulePackPoll();
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        bump();
         pullState();
         schedulePackPoll();
       }
