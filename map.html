@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Algarve · May 2026">
+<meta property="og:title" content="Trip map · Algarve May '26">
+<meta property="og:description" content="Every venue pinned on one map - Quarteira, Vilamoura and beyond.">
+<meta property="og:image" content="https://montyburrows.github.io/algarve/img/boatparty-1.jpg">
+<meta property="og:url" content="https://montyburrows.github.io/algarve/map.html">
+<meta name="twitter:card" content="summary_large_image">
+<title>Trip map &middot; Algarve May '26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#1a4870">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-dot"></span>Algarve &middot; May '26</a>
+    <ul>
+      <li><a href="itinerary.html">Days</a></li>
+      <li><a href="map.html">Map</a></li>
+      <li><a href="calm.html">Calm</a></li>
+      <li><a href="lively.html">Lively</a></li>
+      <li><a href="walks.html">Walks</a></li>
+      <li><a href="eat.html">Eat</a></li>
+      <li><a href="phrases.html">Phrases</a></li>
+      <li class="nav-bingo"><a href="bingo.html">Bingo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <a class="page-back" href="index.html">&#8592; Home</a>
+    <h1>The trip, mapped.</h1>
+    <p class="lede">Every venue, the apartment, and Faro airport on one map. Tap a pin for the full page; tap a chip to filter by category.</p>
+  </div>
+</header>
+
+<section class="block" style="padding-top: 40px;">
+  <div class="wrap">
+    <div class="map-filters" id="mapFilters" role="group" aria-label="Filter pins by category">
+      <button class="map-chip active" data-cat="all">All <span class="chip-count" id="count-all">0</span></button>
+      <button class="map-chip" data-cat="stay" style="--chip: #1a4870">Stay <span class="chip-count" id="count-stay">0</span></button>
+      <button class="map-chip" data-cat="calm" style="--chip: #f3b941">Calm <span class="chip-count" id="count-calm">0</span></button>
+      <button class="map-chip" data-cat="lively" style="--chip: #c44e7a">Lively <span class="chip-count" id="count-lively">0</span></button>
+      <button class="map-chip" data-cat="eat" style="--chip: #d56b3e">Eat <span class="chip-count" id="count-eat">0</span></button>
+      <button class="map-chip" data-cat="walks" style="--chip: #738150">Walks <span class="chip-count" id="count-walks">0</span></button>
+      <button class="map-chip" data-cat="transport" style="--chip: #564838">Travel <span class="chip-count" id="count-transport">0</span></button>
+    </div>
+
+    <div class="map-shell">
+      <div id="tripMap" class="map-canvas"></div>
+      <div class="map-fallback" id="mapFallback">
+        <div class="mf-icon">&#9888;</div>
+        <p>Map can't load right now.</p>
+        <p class="mf-hint">Check your connection or open Google Maps directly from any venue page.</p>
+      </div>
+    </div>
+
+    <div class="map-list" id="mapList"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signoff">Boa viagem, rapazes.</div>
+    <div class="total-flex">Sun, sea, port at sunset, a Saturday on the marina.</div>
+    <div class="meta">Quarteira &middot; Vilamoura &middot; Algarve &middot; 21 - 24 May 2026</div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script>
+  // Kick off the Google Maps JS API immediately so it loads in parallel with the rest of this script.
+  // If anything below this throws, the map can still render and call initTripMap.
+  (function loadMapsApi() {
+    if (typeof CONFIG === 'undefined' || !CONFIG.GOOGLE_MAPS_KEY) {
+      const fb = document.getElementById('mapFallback');
+      if (fb) fb.style.display = 'flex';
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.GOOGLE_MAPS_KEY}&callback=initTripMap&v=weekly&loading=async`;
+    s.async = true;
+    s.onerror = () => {
+      const fb = document.getElementById('mapFallback');
+      if (fb) fb.style.display = 'flex';
+    };
+    document.head.appendChild(s);
+    setTimeout(() => {
+      if (!window._tripMapLoaded) {
+        const fb = document.getElementById('mapFallback');
+        if (fb) fb.style.display = 'flex';
+      }
+    }, 8000);
+  })();
+
+  // Approximate coordinates - fine-tune by editing the values below.
+  const VENUES = [
+    { name: 'SunnyQuarters apartment', cat: 'stay', pos: [37.0691, -8.1031], page: 'stay.html', note: 'Where we sleep' },
+    { name: 'Rolha a Rolha', cat: 'calm', pos: [37.0688, -8.1009], page: 'venues/rolha-a-rolha.html', note: 'Wine tasting · Quarteira' },
+    { name: 'Oporto Tavern', cat: 'calm', pos: [37.0758, -8.1175], page: 'venues/oporto-tavern.html', note: 'Wine & port · marina' },
+    { name: 'Atlantic Bar', cat: 'lively', pos: [37.0750, -8.1170], page: 'venues/atlantic-bar.html', note: 'Marina go-to' },
+    { name: 'Kadoc', cat: 'lively', pos: [37.1308, -8.1308], page: 'venues/kadoc.html', note: 'Mega club · 15 min taxi' },
+    { name: "Cat's Bar", cat: 'lively', pos: [37.0752, -8.1180], page: 'venues/cats-bar.html', note: 'Marina dive' },
+    { name: "O'Neills", cat: 'lively', pos: [37.0768, -8.1190], page: 'venues/oneills.html', note: 'Irish pub' },
+    { name: 'Boat party', cat: 'lively', pos: [37.0748, -8.1178], page: 'venues/boat-party.html', note: 'Departs marina' },
+    { name: 'Salmora', cat: 'eat', pos: [37.0790, -8.1185], page: 'venues/salmora.html', note: 'Live kitchen' },
+    { name: 'Akvavit', cat: 'eat', pos: [37.0780, -8.1180], page: 'venues/akvavit.html', note: 'Scandi-Portuguese' },
+    { name: 'Casa do Pescador', cat: 'eat', pos: [37.0785, -8.1190], page: 'venues/casa-do-pescador.html', note: 'Seafood' },
+    { name: 'Tico Tico', cat: 'eat', pos: [37.0688, -8.1040], page: 'venues/tico-tico.html', note: 'Quarteira backstreet' },
+    { name: "Sailor's Corner", cat: 'eat', pos: [37.0680, -8.1030], page: 'venues/sailors-corner.html', note: 'Quarteira' },
+    { name: 'Motão', cat: 'eat', pos: [37.0782, -8.1175], page: 'venues/motao.html', note: 'Marina dinner' },
+    { name: 'Praia da Falésia', cat: 'walks', pos: [37.0780, -8.1300], page: 'venues/falesia.html', note: 'Cliff walk' },
+    { name: 'Cerro da Vila', cat: 'walks', pos: [37.0794, -8.1271], page: 'venues/cerro-da-vila.html', note: 'Roman ruins' },
+    { name: 'Calçadão', cat: 'walks', pos: [37.0670, -8.1030], page: 'venues/calcadao.html', note: 'Quarteira promenade' },
+    { name: 'Loulé Market', cat: 'walks', pos: [37.1389, -8.0224], page: 'venues/loule-market.html', note: 'Sat morning market' },
+    { name: 'Faro Airport', cat: 'transport', pos: [37.0144, -7.9659], page: null, note: 'Arrival / departure' }
+  ];
+
+  const CAT_COLOR = {
+    stay: '#1a4870',
+    calm: '#f3b941',
+    lively: '#c44e7a',
+    eat: '#d56b3e',
+    walks: '#738150',
+    transport: '#564838'
+  };
+
+  // Count venues per category for chips
+  ['all','stay','calm','lively','eat','walks','transport'].forEach(c => {
+    const el = document.getElementById('count-' + c);
+    if (el) el.textContent = c === 'all' ? VENUES.length : VENUES.filter(v => v.cat === c).length;
+  });
+
+  // Render text list (works even if map fails to load)
+  const mapList = document.getElementById('mapList');
+  function renderList(filter) {
+    const filtered = filter === 'all' ? VENUES : VENUES.filter(v => v.cat === filter);
+    mapList.innerHTML = filtered.map(v => `
+      <div class="map-list-row" data-cat="${v.cat}">
+        <span class="mlr-dot" style="background:${CAT_COLOR[v.cat]}"></span>
+        <div class="mlr-body">
+          <div class="mlr-name">${v.page ? `<a href="${v.page}">${v.name}</a>` : v.name}</div>
+          <div class="mlr-note">${v.note}</div>
+        </div>
+        <a class="mlr-dir" href="https://www.google.com/maps/dir/?api=1&destination=${v.pos[0]},${v.pos[1]}" target="_blank" rel="noopener" aria-label="Directions to ${v.name}">&#10138;</a>
+      </div>
+    `).join('');
+  }
+  renderList('all');
+
+  // Map state
+  let map, markers = [];
+  let currentFilter = 'all';
+
+  // Photo cache: in-memory map of venue name -> url string, null (no photo), or undefined (not fetched).
+  // Backed by localStorage so we don't re-hit the Places API every page load.
+  const PHOTO_CACHE_KEY = 'algarve-place-photos-v1';
+  const PHOTO_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+  const photoCache = (function load() {
+    try {
+      const raw = localStorage.getItem(PHOTO_CACHE_KEY);
+      if (!raw) return {};
+      const data = JSON.parse(raw);
+      if (!data || !data.ts || Date.now() - data.ts > PHOTO_CACHE_TTL_MS) return {};
+      return data.photos || {};
+    } catch { return {}; }
+  })();
+  function savePhotoCache() {
+    try {
+      localStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify({ ts: Date.now(), photos: photoCache }));
+    } catch {}
+  }
+
+  function renderInfo(info, v, photoUrl) {
+    const photoHtml = photoUrl
+      ? `<img class="iw-photo" src="${photoUrl}" alt="${v.name}" loading="lazy">`
+      : (photoUrl === undefined ? '<div class="iw-photo iw-photo-loading">Loading photo...</div>' : '');
+    info.setContent(`
+      <div class="iw">
+        ${photoHtml}
+        <div class="iw-name">${v.name}</div>
+        <div class="iw-note">${v.note}</div>
+        <div class="iw-links">
+          ${v.page ? `<a href="${v.page}">Details</a>` : ''}
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${v.pos[0]},${v.pos[1]}" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    `);
+  }
+
+  async function fetchPhoto(v) {
+    try {
+      const { Place } = await google.maps.importLibrary('places');
+      const { places } = await Place.searchByText({
+        textQuery: v.name,
+        fields: ['photos'],
+        locationBias: { lat: v.pos[0], lng: v.pos[1] },
+        maxResultCount: 1
+      });
+      if (places.length && places[0].photos && places[0].photos.length) {
+        return places[0].photos[0].getURI({ maxWidth: 480 });
+      }
+    } catch (e) {
+      console.warn('Photo fetch failed for', v.name, e);
+    }
+    return null;
+  }
+
+  // Pre-fetch photos for any venue not already cached, with a small concurrency limit.
+  // Warms the browser image cache too so clicks render instantly.
+  async function prefetchPhotos() {
+    const todo = VENUES.filter(v => photoCache[v.name] === undefined);
+    if (!todo.length) return;
+    const CONCURRENCY = 4;
+    let idx = 0;
+    async function worker() {
+      while (idx < todo.length) {
+        const v = todo[idx++];
+        const url = await fetchPhoto(v);
+        photoCache[v.name] = url;
+        if (url) {
+          // Warm the browser image cache
+          const img = new Image();
+          img.src = url;
+        }
+      }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    savePhotoCache();
+  }
+
+  window.initTripMap = function () {
+    window._tripMapLoaded = true;
+    document.getElementById('mapFallback').style.display = 'none';
+    map = new google.maps.Map(document.getElementById('tripMap'), {
+      center: { lat: 37.075, lng: -8.115 },
+      zoom: 13,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      gestureHandling: 'greedy',
+      styles: [
+        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+        { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+      ]
+    });
+
+    const bounds = new google.maps.LatLngBounds();
+    const info = new google.maps.InfoWindow();
+
+    VENUES.forEach(v => {
+      const marker = new google.maps.Marker({
+        position: { lat: v.pos[0], lng: v.pos[1] },
+        map,
+        title: v.name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: CAT_COLOR[v.cat],
+          fillOpacity: 1,
+          strokeColor: '#fff',
+          strokeWeight: 3,
+          scale: v.cat === 'stay' || v.cat === 'transport' ? 11 : 9
+        }
+      });
+      marker._cat = v.cat;
+      marker.addListener('click', () => {
+        const photoUrl = photoCache[v.name];
+        renderInfo(info, v, photoUrl);
+        info.open(map, marker);
+        if (photoUrl === undefined) {
+          fetchPhoto(v).then((url) => {
+            photoCache[v.name] = url;
+            savePhotoCache();
+            // Only re-render if this info window is still showing this venue
+            if (info.getMap()) renderInfo(info, v, url);
+          });
+        }
+      });
+      markers.push(marker);
+      bounds.extend(marker.getPosition());
+    });
+
+    // Fit to bounds but cap zoom so we don't end up zoomed in on a tight cluster
+    map.fitBounds(bounds, 60);
+    google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+      if (map.getZoom() > 14) map.setZoom(14);
+    });
+
+    // Kick off photo pre-fetch in the background once the map is up
+    prefetchPhotos();
+  };
+
+  // Category filter
+  document.querySelectorAll('.map-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.map-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.cat;
+      renderList(currentFilter);
+      if (markers.length) {
+        markers.forEach(m => m.setMap(currentFilter === 'all' || m._cat === currentFilter ? map : null));
+      }
+    });
+  });
+
+</script>
+</body>
+</html>
