@@ -1,6 +1,6 @@
 // Algarve service worker - offline support for the trip site.
 // Bump VERSION any time the precache list or runtime strategy changes.
-const VERSION = 'v3';
+const VERSION = 'v7';
 const STATIC_CACHE = `algarve-static-${VERSION}`;
 const RUNTIME_CACHE = `algarve-runtime-${VERSION}`;
 
@@ -18,6 +18,7 @@ const PRECACHE_URLS = [
   'weather.html',
   'bingo.html',
   'map.html',
+  'day.html',
   'style.css',
   'script.js',
   'config.js',
