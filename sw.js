@@ -1,6 +1,6 @@
 // Algarve service worker - offline support for the trip site.
 // Bump VERSION any time the precache list or runtime strategy changes.
-const VERSION = 'v17';
+const VERSION = 'v20';
 const STATIC_CACHE = `algarve-static-${VERSION}`;
 const RUNTIME_CACHE = `algarve-runtime-${VERSION}`;
 
@@ -21,9 +21,9 @@ const PRECACHE_URLS = [
   'day.html',
   'pack.html',
   'style.css',
-  'style.css?v=v17',
+  'style.css?v=v20',
   'script.js',
-  'script.js?v=v17',
+  'script.js?v=v20',
   'config.js',
   'venues/akvavit.html',
   'venues/atlantic-bar.html',
