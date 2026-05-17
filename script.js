@@ -21,7 +21,7 @@
   }, { capture: true });
 
   // ── App version - keep in sync with VERSION constant at top of sw.js ──
-  const APP_VERSION = 'v18';
+  const APP_VERSION = 'v20';
 
   // ── Service worker: offline support + auto-update on new deploys ────
   // When a new SW activates we reload the page automatically so users
@@ -794,6 +794,8 @@
     const ACTIVE_MS = 1000;
     const IDLE_MS = 15000;
     const ACTIVE_WINDOW_MS = 30000;
+    const SLOW_POLL_MS = 120000;
+    const USE_ADAPTIVE_POLL = /iPhone/i.test(navigator.userAgent || '');
     const cfg = (typeof CONFIG !== 'undefined') ? CONFIG : {};
     const SYNC_ENABLED = !!(cfg.JSONBIN_KEY && cfg.JSONBIN_BIN_ID);
     const READ_URL = SYNC_ENABLED ? `https://api.jsonbin.io/v3/b/${cfg.JSONBIN_BIN_ID}/latest` : null;
@@ -877,6 +879,7 @@
     }
 
     let lastActivity = 0;
+    let lastAutoPull = 0;
     function bump() { lastActivity = Date.now(); }
 
     async function fetchRemote() {
@@ -901,6 +904,12 @@
       } catch (e) {
         setSync('Offline - this device only', 'error');
       }
+    }
+    async function pullStateForAutoSync() {
+      const now = Date.now();
+      if (!USE_ADAPTIVE_POLL && now - lastAutoPull < SLOW_POLL_MS) return;
+      lastAutoPull = now;
+      await pullState();
     }
 
     let pushTimer = null;
@@ -1020,13 +1029,16 @@
     render();
     bump();
     pullState();
+    if (!USE_ADAPTIVE_POLL) lastAutoPull = Date.now();
 
     let pollTimer = null;
     function schedulePoll() {
       clearTimeout(pollTimer);
-      const interval = (Date.now() - lastActivity < ACTIVE_WINDOW_MS) ? ACTIVE_MS : IDLE_MS;
+      const interval = USE_ADAPTIVE_POLL
+        ? ((Date.now() - lastActivity < ACTIVE_WINDOW_MS) ? ACTIVE_MS : IDLE_MS)
+        : SLOW_POLL_MS;
       pollTimer = setTimeout(async () => {
-        if (document.visibilityState === 'visible' && !pushing) await pullState();
+        if (document.visibilityState === 'visible' && !pushing) await pullStateForAutoSync();
         schedulePoll();
       }, interval);
     }
@@ -1035,7 +1047,7 @@
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         bump();
-        pullState();
+        pullStateForAutoSync();
         schedulePoll();
       }
     });
