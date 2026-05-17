@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Algarve">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Algarve · May 2026">
-<meta property="og:title" content="Trip Bingo · Algarve May '26">
-<meta property="og:description" content="Algarve trip bingo - mark off the classics as they happen!">
+<meta property="og:site_name" content="Algarve &middot; May 2026">
+<meta property="og:title" content="Packing list &middot; Algarve May '26">
+<meta property="og:description" content="What to pack - Monty &amp; Sahil. Syncs across devices.">
 <meta property="og:image" content="https://montyburrows.github.io/algarve/img/boatparty-1.jpg">
-<meta property="og:url" content="https://montyburrows.github.io/algarve/bingo.html">
+<meta property="og:url" content="https://montyburrows.github.io/algarve/pack.html">
 <meta name="twitter:card" content="summary_large_image">
-<title>Trip Bingo · Algarve May '26</title>
+<title>Packing list &middot; Algarve May '26</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Inter:wght@300..700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
 <meta name="theme-color" content="#1a4870">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="pack-monty">
 
 <nav class="topnav">
   <div class="nav-inner">
@@ -43,42 +43,35 @@
   </div>
 </nav>
 
-<header class="page-hero" style="background: var(--bg-warm);">
+<header class="page-hero">
   <div class="wrap">
     <a class="page-back" href="index.html">&#8592; Home</a>
-    <h1>Trip <em>bingo</em>.</h1>
-    <p class="lede">Two cards. Tap a square when it happens - progress syncs across everyone's phones in real time.</p>
+    <h1>The <em>packing list</em>.</h1>
+    <p class="lede">Tap the checkbox to mark packed (tap again for "maybe"). Tap the text to rename. Lists sync between devices so you can both update from your phones. Shared items at the top of each tab - agree who's bringing what.</p>
   </div>
 </header>
 
 <section class="block sand">
   <div class="wrap">
-    <div class="bingo-wrap">
+    <div class="pack-wrap" id="pack-wrap">
 
-      <div class="bingo-tabs" role="tablist">
-        <button class="bingo-tab active" data-card="realistic" role="tab">Realistic</button>
-        <button class="bingo-tab" data-card="funny" role="tab">Funny</button>
-        <span class="bingo-sync" id="bingo-sync">Syncing...</span>
+      <div class="pack-tabs" role="tablist">
+        <button class="pack-tab is-monty active" data-tab="monty" role="tab">Monty</button>
+        <button class="pack-tab is-sahil" data-tab="sahil" role="tab">Sahil</button>
+        <span class="pack-sync" id="pack-sync">Syncing...</span>
       </div>
 
-      <div class="bingo-header">
-        <div class="bingo-letter">B</div>
-        <div class="bingo-letter">I</div>
-        <div class="bingo-letter">N</div>
-        <div class="bingo-letter">G</div>
-        <div class="bingo-letter">O</div>
+      <div class="pack-summary" id="pack-summary" aria-live="polite">
+        <span class="pack-summary-counts" id="pack-summary-counts">0 / 0 packed</span>
+        <div class="pack-summary-bar"><div class="pack-summary-fill" id="pack-summary-fill" style="width: 0%"></div></div>
+        <span class="pack-summary-pct" id="pack-summary-pct">0%</span>
       </div>
 
-      <div class="bingo-board" id="bingo-board"></div>
+      <div id="pack-content"></div>
 
-      <div class="bingo-win-banner" id="bingo-win-banner">
-        <h2>BINGO!</h2>
-        <p>Genuinely remarkable. Boa viagem, rapazes.</p>
-      </div>
-
-      <div class="bingo-controls">
-        <button class="btn secondary" id="bingo-refresh">Refresh</button>
-        <button class="btn secondary" id="bingo-reset">Reset this card</button>
+      <div class="pack-tools">
+        <button class="btn secondary" id="pack-refresh">Refresh from cloud</button>
+        <button class="btn secondary" id="pack-reset">Reset this tab</button>
       </div>
 
     </div>

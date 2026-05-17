@@ -1,6 +1,6 @@
 // Algarve service worker - offline support for the trip site.
 // Bump VERSION any time the precache list or runtime strategy changes.
-const VERSION = 'v8';
+const VERSION = 'v14';
 const STATIC_CACHE = `algarve-static-${VERSION}`;
 const RUNTIME_CACHE = `algarve-runtime-${VERSION}`;
 
@@ -19,22 +19,26 @@ const PRECACHE_URLS = [
   'bingo.html',
   'map.html',
   'day.html',
+  'pack.html',
   'style.css',
   'script.js',
   'config.js',
   'venues/akvavit.html',
   'venues/atlantic-bar.html',
+  'venues/a-tasca.html',
   'venues/boat-party.html',
   'venues/calcadao.html',
   'venues/casa-do-pescador.html',
   'venues/cats-bar.html',
   'venues/cerro-da-vila.html',
   'venues/falesia.html',
+  'venues/forte-novo.html',
   'venues/kadoc.html',
   'venues/loule-market.html',
   'venues/motao.html',
   'venues/oneills.html',
   'venues/oporto-tavern.html',
+  'venues/ramires.html',
   'venues/rolha-a-rolha.html',
   'venues/sailors-corner.html',
   'venues/salmora.html',
@@ -60,9 +64,18 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.filter((k) => k !== STATIC_CACHE && k !== RUNTIME_CACHE).map((k) => caches.delete(k))
-    )).then(() => self.clients.claim())
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys.filter((k) => k !== STATIC_CACHE && k !== RUNTIME_CACHE).map((k) => caches.delete(k))
+      ))
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then((clients) => {
+        // Belt-and-braces with controllerchange: notify open pages that a new SW activated.
+        clients.forEach((c) => {
+          try { c.postMessage({ type: 'sw-activated', version: VERSION }); } catch (e) {}
+        });
+      })
   );
 });
 

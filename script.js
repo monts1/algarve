@@ -20,16 +20,120 @@
     if (el) window.haptic(el.classList.contains('bingo-cell') ? 'heavy' : 'tap');
   }, { capture: true });
 
-  // ── Service worker: offline support ─────────────────────────────
+  // ── App version - keep in sync with VERSION constant at top of sw.js ──
+  const APP_VERSION = 'v14';
+
+  // ── Service worker: offline support + auto-update on new deploys ────
+  // When a new SW activates we reload the page automatically so users
+  // pick up the latest HTML/CSS/JS without having to clear their cache.
+  function showUpdateToast(text) {
+    let el = document.getElementById('update-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'update-toast';
+      el.className = 'update-toast';
+      document.body.appendChild(el);
+    }
+    el.textContent = text || 'New version - refreshing...';
+    // Force reflow then add show class so transition runs
+    void el.offsetWidth;
+    el.classList.add('show');
+  }
+
+  async function forceUpdateNow() {
+    showUpdateToast('Clearing cache...');
+    try {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+    } catch (e) { /* best effort */ }
+    // Cache-busted reload so the browser also bypasses HTTP cache
+    const url = new URL(window.location.href);
+    url.searchParams.set('_v', Date.now());
+    window.location.replace(url.toString());
+  }
+  // Expose for manual invocation (e.g. footer pill, devtools)
+  window.forceUpdateNow = forceUpdateNow;
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const inVenues = window.location.pathname.includes('/venues/');
       const swPath = inVenues ? '../sw.js' : 'sw.js';
       const scope = inVenues ? '../' : './';
+
+      // Snapshot controller state BEFORE register so we can tell apart
+      // first-time install (no reload) from version bump (reload).
+      const hadController = !!navigator.serviceWorker.controller;
+      let reloading = false;
+
+      const triggerReload = () => {
+        if (reloading) return;
+        reloading = true;
+        showUpdateToast('New version - refreshing...');
+        setTimeout(() => window.location.reload(), 600);
+      };
+
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) return; // first-time install - nothing to reload
+        triggerReload();
+      });
+
+      // Explicit broadcast from the SW activate handler - covers cases where
+      // controllerchange might miss (some browsers, slow claim, etc).
+      navigator.serviceWorker.addEventListener('message', (e) => {
+        if (e && e.data && e.data.type === 'sw-activated') {
+          if (!hadController) return;
+          if (e.data.version === APP_VERSION) return; // already on this version
+          triggerReload();
+        }
+      });
+
       navigator.serviceWorker.register(swPath, { scope })
+        .then((reg) => {
+          const checkForUpdate = () => reg.update().catch(() => {});
+          // Re-check whenever the tab becomes visible again
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') checkForUpdate();
+          });
+          // Long-open tabs: re-check every 30 min
+          setInterval(checkForUpdate, 30 * 60 * 1000);
+        })
         .catch((err) => console.warn('[sw] register failed', err));
     });
   }
+
+  // Footer version pill - tap 3x to force a hard refresh (escape hatch
+  // for the rare case where the SW lifecycle gets wedged).
+  window.addEventListener('load', () => {
+    const meta = document.querySelector('footer .meta');
+    if (!meta || meta.querySelector('.v-pill')) return;
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'v-pill';
+    pill.textContent = APP_VERSION;
+    pill.title = 'Tap 3 times to force-refresh';
+    pill.setAttribute('aria-label', 'App version ' + APP_VERSION + ' - tap 3 times to force refresh');
+    let taps = 0, timer;
+    pill.addEventListener('click', () => {
+      taps++;
+      clearTimeout(timer);
+      pill.classList.toggle('tap-warn', taps >= 2);
+      if (taps >= 3) {
+        taps = 0;
+        pill.classList.remove('tap-warn');
+        forceUpdateNow();
+      } else {
+        timer = setTimeout(() => { taps = 0; pill.classList.remove('tap-warn'); }, 600);
+      }
+    });
+    meta.appendChild(document.createTextNode(' · '));
+    meta.appendChild(pill);
+  });
 
   // ── Nav: scroll state + active page highlight + mobile menu ─────
   const topNav = document.querySelector('nav.topnav');
@@ -650,7 +754,7 @@
         'Attempts Portuguese',
         'Catches a sunset or sunrise',
         'Orders something, no idea what it is',
-        'Gets hit on at the bar',
+        'Live music we didn\'t plan for',
         'Refuses to leave when it\'s time',
         'Wears the same shirt two days running',
         'Hangover writes off a morning',
@@ -660,7 +764,7 @@
         'Buy something we\'d never buy at home',
         'Pre-drinks at the apartment'
       ],
-      fun: [
+      funny: [
         'Stranger buys us a round',
         'Karaoke happens, by us',
         'Locals invite us to their table',
@@ -672,7 +776,7 @@
         'Free shot from a bartender',
         'Sea warmer than expected',
         'Bartender remembers our order',
-        'Live music we didn\'t plan for',
+        'Gets hit on at the bar',
         'The Algarve!',
         'Octopus eaten, tentacles and all',
         'Make actual friends with locals',
@@ -703,16 +807,16 @@
     function emptyState() {
       return {
         realistic: Array(25).fill(false),
-        fun: Array(25).fill(false),
+        funny: Array(25).fill(false),
         ts: {
           realistic: Array(25).fill(0),
-          fun: Array(25).fill(0)
+          funny: Array(25).fill(0)
         }
       };
     }
     let state = emptyState();
     state.realistic[FREE] = true;
-    state.fun[FREE] = true;
+    state.funny[FREE] = true;
 
     const syncEl = document.getElementById('bingo-sync');
     const banner = document.getElementById('bingo-win-banner');
@@ -734,7 +838,7 @@
         if (norm) state = norm;
       } catch (e) {}
       state.realistic[FREE] = true;
-      state.fun[FREE] = true;
+      state.funny[FREE] = true;
     }
 
     function saveLocal() {
@@ -744,7 +848,7 @@
     function normalise(remote) {
       if (!remote || typeof remote !== 'object') return null;
       const out = emptyState();
-      ['realistic', 'fun'].forEach(card => {
+      ['realistic', 'funny'].forEach(card => {
         if (Array.isArray(remote[card]) && remote[card].length === 25) {
           out[card] = remote[card].map(Boolean);
         }
@@ -753,13 +857,13 @@
         }
       });
       out.realistic[FREE] = true;
-      out.fun[FREE] = true;
+      out.funny[FREE] = true;
       return out;
     }
 
     function merge(local, remote) {
       const out = emptyState();
-      ['realistic', 'fun'].forEach(card => {
+      ['realistic', 'funny'].forEach(card => {
         for (let i = 0; i < 25; i++) {
           if (remote.ts[card][i] > local.ts[card][i]) {
             out[card][i] = remote[card][i];
@@ -771,7 +875,7 @@
         }
       });
       out.realistic[FREE] = true;
-      out.fun[FREE] = true;
+      out.funny[FREE] = true;
       return out;
     }
 
@@ -1106,4 +1210,793 @@
 
     tick();
     setInterval(tick, 30000);
+  }
+
+  // ── Packing list ────────────────────────────────────────────────
+  const packContent = document.getElementById('pack-content');
+  if (packContent) {
+    const PACK_LS_KEY = 'algarve-packing-v1';
+    const PACK_ACTIVE_MS = 1000;
+    const PACK_IDLE_MS = 15000;
+    const PACK_ACTIVE_WINDOW_MS = 30000;
+    const pCfg = (typeof CONFIG !== 'undefined') ? CONFIG : {};
+    const PACK_BIN_ID = pCfg.JSONBIN_PACKING_BIN_ID;
+    const PACK_SYNC_ENABLED = !!(pCfg.JSONBIN_PACKING_KEY && PACK_BIN_ID);
+    const PACK_READ_URL = PACK_SYNC_ENABLED ? `https://api.jsonbin.io/v3/b/${PACK_BIN_ID}/latest` : null;
+    const PACK_WRITE_URL = PACK_SYNC_ENABLED ? `https://api.jsonbin.io/v3/b/${PACK_BIN_ID}` : null;
+    const PACK_HEADERS = PACK_SYNC_ENABLED ? { 'X-Access-Key': pCfg.JSONBIN_PACKING_KEY } : null;
+
+    // Category structure - same for both people
+    const CATS = [
+      { key: 'clothes', name: 'Clothes' },
+      { key: 'toiletries', name: 'Toiletries' },
+      { key: 'tech', name: 'Tech' },
+      { key: 'documents', name: 'Documents' },
+      { key: 'beach', name: 'Beach kit' },
+      { key: 'goingout', name: 'Going-out' },
+      { key: 'misc', name: 'Misc' }
+    ];
+
+    // Default seed items. Each: [text, category]. IDs are deterministic so
+    // two devices seeding the same defaults do not create duplicate rows.
+    // Monty has 5 nights (Tue-Sat), Sahil 3 nights (Thu-Sat).
+    const SEED_MONTY = [
+      ['6x t-shirts (5 nights + spare)', 'clothes'],
+      ['1x linen shirt (Fri/Sat dinner)', 'clothes'],
+      ['2x swim shorts', 'clothes'],
+      ['1x smart shorts', 'clothes'],
+      ['2x casual shorts', 'clothes'],
+      ['1x chinos / light trousers', 'clothes'],
+      ['7x underwear', 'clothes'],
+      ['5x socks', 'clothes'],
+      ['1x light jumper (cool evenings)', 'clothes'],
+      ['1x light rain jacket', 'clothes'],
+      ['Pyjamas / sleep shorts', 'clothes'],
+      ['Trainers', 'clothes'],
+      ['Flip-flops / slides', 'clothes'],
+      ['Toothbrush + toothpaste', 'toiletries'],
+      ['Deodorant', 'toiletries'],
+      ['Shampoo / shower gel (mini)', 'toiletries'],
+      ['Razor + shaving', 'toiletries'],
+      ['Comb / hair stuff', 'toiletries'],
+      ['Face wash / moisturiser', 'toiletries'],
+      ['Phone + charger', 'tech'],
+      ['Laptop + charger (Tue/Wed work)', 'tech'],
+      ['Work phone + charger', 'tech'],
+      ['Headphones', 'tech'],
+      ['Kindle / Switch (maybe)', 'tech'],
+      ['Camera (maybe)', 'tech'],
+      ['Spare USB-C cable', 'tech'],
+      ['Passport', 'documents'],
+      ['Boarding passes saved offline', 'documents'],
+      ['Travel insurance card', 'documents'],
+      ['GHIC / EHIC', 'documents'],
+      ['Driving licence', 'documents'],
+      ['Sunglasses', 'beach'],
+      ['Snorkel set (maybe)', 'beach'],
+      ['Beach bag', 'beach'],
+      ['Cologne / scent', 'goingout'],
+      ['Going-out shoes', 'goingout'],
+      ['Smart watch / nice watch', 'goingout'],
+      ['Sleep mask', 'misc'],
+      ['Earplugs', 'misc']
+    ];
+    const SEED_SAHIL = [
+      ['4x t-shirts (3 nights + spare)', 'clothes'],
+      ['1x linen shirt (Fri/Sat dinner)', 'clothes'],
+      ['2x swim shorts', 'clothes'],
+      ['1x smart shorts', 'clothes'],
+      ['2x casual shorts', 'clothes'],
+      ['1x chinos / light trousers', 'clothes'],
+      ['5x underwear', 'clothes'],
+      ['3x socks', 'clothes'],
+      ['1x light jumper (cool evenings)', 'clothes'],
+      ['Pyjamas / sleep shorts', 'clothes'],
+      ['Trainers', 'clothes'],
+      ['Flip-flops / slides', 'clothes'],
+      ['Toothbrush + toothpaste', 'toiletries'],
+      ['Deodorant', 'toiletries'],
+      ['Shampoo / shower gel (mini)', 'toiletries'],
+      ['Razor + shaving', 'toiletries'],
+      ['Face wash / moisturiser', 'toiletries'],
+      ['Phone + charger', 'tech'],
+      ['Headphones', 'tech'],
+      ['Kindle (maybe)', 'tech'],
+      ['Camera (maybe)', 'tech'],
+      ['Passport', 'documents'],
+      ['Boarding passes saved offline', 'documents'],
+      ['Travel insurance card', 'documents'],
+      ['GHIC / EHIC', 'documents'],
+      ['Sunglasses', 'beach'],
+      ['Beach bag', 'beach'],
+      ['Cologne / scent', 'goingout'],
+      ['Going-out shoes', 'goingout'],
+      ['Sleep mask', 'misc'],
+      ['Earplugs', 'misc']
+    ];
+    // Shared items - coordinate who brings each
+    const SEED_SHARED = [
+      'Suncream factor 50',
+      'After-sun',
+      'UK to EU travel adapter',
+      'Spare phone charger cable',
+      'Painkillers (paracetamol / ibuprofen)',
+      'Antihistamines',
+      'Plasters / small first aid',
+      'Reusable water bottle',
+      'Beach towel',
+      'Portable Bluetooth speaker',
+      'Pack of cards / backgammon',
+      'Snacks for the boat party',
+      'Cash - ~€100 each for tips & markets'
+    ];
+
+    // ───── State shape ─────
+    // {
+    //   shared: [ { id, text, state: 'empty'|'packed'|'maybe', owner: 'none'|'monty'|'sahil'|'both'|'skip', ts } ],
+    //   monty: { items: [ { id, text, cat, state, ts } ] },
+    //   sahil: { items: [ { id, text, cat, state, ts } ] },
+    //   deleted: { shared: { key: ts }, monty: { key: ts }, sahil: { key: ts } }
+    // }
+    function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+    function itemKey(text, cat) {
+      return [cat || '', String(text).trim().replace(/\s+/g, ' ').toLowerCase()].join('|');
+    }
+    function hashString(value) {
+      let hash = 0;
+      for (let i = 0; i < value.length; i += 1) {
+        hash = ((hash << 5) - hash + value.charCodeAt(i)) | 0;
+      }
+      return Math.abs(hash).toString(36);
+    }
+    function seedId(scope, text, cat) {
+      return 'seed-' + hashString([scope, cat || '', itemKey(text, cat)].join('|'));
+    }
+    function emptyDeleted() {
+      return { shared: {}, monty: {}, sahil: {} };
+    }
+    function emptyState() {
+      return { shared: [], monty: { items: [] }, sahil: { items: [] }, deleted: emptyDeleted() };
+    }
+    function seedDefaults() {
+      // Fresh default items are not user edits; keep their timestamp low so
+      // cloud/local changes from another device win when IDs match.
+      const seedTs = 0;
+      const s = emptyState();
+      s.shared = SEED_SHARED.map(t => ({ id: seedId('shared', t), text: t, state: 'empty', owner: 'none', ts: seedTs }));
+      s.monty.items = SEED_MONTY.map(([t, c]) => ({ id: seedId('monty', t, c), text: t, cat: c, state: 'empty', ts: seedTs }));
+      s.sahil.items = SEED_SAHIL.map(([t, c]) => ({ id: seedId('sahil', t, c), text: t, cat: c, state: 'empty', ts: seedTs }));
+      return s;
+    }
+
+    let state = seedDefaults();
+    let active = 'monty';
+    let seeded = false;
+
+    const syncEl = document.getElementById('pack-sync');
+    const summaryCountsEl = document.getElementById('pack-summary-counts');
+    const summaryFillEl = document.getElementById('pack-summary-fill');
+    const summaryPctEl = document.getElementById('pack-summary-pct');
+    const tabs = document.querySelectorAll('.pack-tab');
+    const resetBtn = document.getElementById('pack-reset');
+    const refreshBtn = document.getElementById('pack-refresh');
+
+    function setSync(text, cls) {
+      if (!syncEl) return;
+      syncEl.textContent = text;
+      syncEl.classList.remove('ok', 'error');
+      if (cls) syncEl.classList.add(cls);
+    }
+
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem(PACK_LS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const norm = normalise(parsed);
+          if (norm) { state = norm; seeded = true; saveLocal(); return; }
+        }
+      } catch (e) {}
+    }
+    function saveLocal() {
+      try { localStorage.setItem(PACK_LS_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function hasDeleted(deleted) {
+      return !!(deleted && ['shared', 'monty', 'sahil'].some(scope => Object.keys(deleted[scope] || {}).length));
+    }
+    function normaliseDeleted(raw) {
+      const out = emptyDeleted();
+      if (!raw || typeof raw !== 'object') return out;
+      ['shared', 'monty', 'sahil'].forEach(scope => {
+        if (!raw[scope] || typeof raw[scope] !== 'object') return;
+        Object.keys(raw[scope]).forEach(key => {
+          const ts = Number(raw[scope][key]) || 0;
+          if (ts > 0) out[scope][String(key)] = ts;
+        });
+      });
+      return out;
+    }
+    function itemDeleteKeys(item, scope) {
+      const naturalKey = scope === 'shared'
+        ? itemKey(item.text)
+        : itemKey(item.text, item.cat || 'misc');
+      return ['id:' + String(item.id), 'key:' + naturalKey];
+    }
+    function deleteTsForItem(deleted, scope, item) {
+      const bucket = (deleted && deleted[scope]) || {};
+      return itemDeleteKeys(item, scope).reduce((max, key) => Math.max(max, Number(bucket[key]) || 0), 0);
+    }
+    function filterDeletedItems(items, scope, deleted) {
+      return items.filter(item => deleteTsForItem(deleted, scope, item) <= (item.ts || 0));
+    }
+    function ensureDeletedBucket(targetState, scope) {
+      if (!targetState.deleted) targetState.deleted = emptyDeleted();
+      if (!targetState.deleted[scope]) targetState.deleted[scope] = {};
+      return targetState.deleted[scope];
+    }
+    function markDeleted(item, scope) {
+      const bucket = ensureDeletedBucket(state, scope);
+      const ts = Date.now();
+      itemDeleteKeys(item, scope).forEach(key => { bucket[key] = ts; });
+    }
+    function clearDeleteMarkers(item, scope) {
+      const bucket = ensureDeletedBucket(state, scope);
+      itemDeleteKeys(item, scope).forEach(key => { delete bucket[key]; });
+    }
+    function mergeDeleted(localDeleted, remoteDeleted) {
+      const out = emptyDeleted();
+      [normaliseDeleted(localDeleted), normaliseDeleted(remoteDeleted)].forEach(deleted => {
+        ['shared', 'monty', 'sahil'].forEach(scope => {
+          Object.keys(deleted[scope]).forEach(key => {
+            out[scope][key] = Math.max(out[scope][key] || 0, deleted[scope][key]);
+          });
+        });
+      });
+      return out;
+    }
+
+    function itemStateRank(value) {
+      if (value === 'packed') return 2;
+      if (value === 'maybe') return 1;
+      return 0;
+    }
+    function pickMergedState(a, b, newer) {
+      const older = newer === a ? b : a;
+      const newerLooksLikeOldSeed = newer.state === 'empty' &&
+        !String(newer.id).startsWith('seed-') &&
+        (!('owner' in newer) || newer.owner === 'none');
+      if (newerLooksLikeOldSeed && itemStateRank(older.state) > 0) return older.state;
+      return newer.state;
+    }
+    function pickMergedOwner(a, b, newer) {
+      const aOwner = a.owner || 'none';
+      const bOwner = b.owner || 'none';
+      if (aOwner === 'none') return bOwner;
+      if (bOwner === 'none') return aOwner;
+      return newer.owner || aOwner;
+    }
+    function pickMergedId(a, b, newer) {
+      if (String(a.id).startsWith('seed-')) return a.id;
+      if (String(b.id).startsWith('seed-')) return b.id;
+      return newer.id;
+    }
+    function mergeDuplicateItem(a, b, kind) {
+      const newer = (b.ts || 0) >= (a.ts || 0) ? b : a;
+      const merged = Object.assign({}, newer, {
+        id: pickMergedId(a, b, newer),
+        state: pickMergedState(a, b, newer),
+        ts: Math.max(a.ts || 0, b.ts || 0)
+      });
+      if (kind === 'shared') {
+        merged.owner = pickMergedOwner(a, b, newer);
+      } else {
+        merged.cat = newer.cat || a.cat || b.cat || 'misc';
+      }
+      return merged;
+    }
+    function dedupeItems(items, kind) {
+      const byNaturalKey = new Map();
+      items.forEach(item => {
+        const key = kind === 'shared'
+          ? itemKey(item.text)
+          : itemKey(item.text, item.cat || 'misc');
+        const existing = byNaturalKey.get(key);
+        byNaturalKey.set(key, existing ? mergeDuplicateItem(existing, item, kind) : item);
+      });
+      return Array.from(byNaturalKey.values());
+    }
+
+    // Ensure a returned object has the right shape; missing pieces fall back to defaults.
+    function normalise(remote) {
+      if (!remote || typeof remote !== 'object') return null;
+      const valid = (
+        Array.isArray(remote.shared) ||
+        (remote.monty && Array.isArray(remote.monty.items)) ||
+        (remote.sahil && Array.isArray(remote.sahil.items)) ||
+        (remote.deleted && typeof remote.deleted === 'object')
+      );
+      if (!valid) return null;
+      const out = emptyState();
+      out.deleted = normaliseDeleted(remote.deleted);
+      if (Array.isArray(remote.shared)) {
+        out.shared = dedupeItems(remote.shared.filter(i => i && i.id && typeof i.text === 'string').map(i => ({
+          id: String(i.id),
+          text: String(i.text),
+          state: ['empty', 'packed', 'maybe'].includes(i.state) ? i.state : 'empty',
+          owner: ['none', 'monty', 'sahil', 'both', 'skip'].includes(i.owner) ? i.owner : 'none',
+          ts: Number(i.ts) || 0
+        })), 'shared');
+        out.shared = filterDeletedItems(out.shared, 'shared', out.deleted);
+      }
+      ['monty', 'sahil'].forEach(p => {
+        if (remote[p] && Array.isArray(remote[p].items)) {
+          out[p].items = dedupeItems(remote[p].items.filter(i => i && i.id && typeof i.text === 'string').map(i => ({
+            id: String(i.id),
+            text: String(i.text),
+            cat: typeof i.cat === 'string' ? i.cat : 'misc',
+            state: ['empty', 'packed', 'maybe'].includes(i.state) ? i.state : 'empty',
+            ts: Number(i.ts) || 0
+          })), 'personal');
+          out[p].items = filterDeletedItems(out[p].items, p, out.deleted);
+        }
+      });
+      return out;
+    }
+
+    // Per-item-timestamp merge - higher ts wins. New items in remote get added.
+    function mergeItems(local, remote, scope, deleted) {
+      const kind = scope === 'shared' ? 'shared' : 'personal';
+      const byId = new Map();
+      [...local, ...remote].forEach(item => {
+        const existing = byId.get(item.id);
+        if (!existing || (item.ts || 0) >= (existing.ts || 0)) {
+          byId.set(item.id, item);
+        }
+      });
+      return filterDeletedItems(dedupeItems(Array.from(byId.values()), kind), scope, deleted);
+    }
+    function mergeState(local, remote) {
+      const out = emptyState();
+      out.deleted = mergeDeleted(local.deleted, remote.deleted);
+      out.shared = mergeItems(local.shared || [], remote.shared || [], 'shared', out.deleted);
+      out.monty.items = mergeItems(local.monty.items || [], remote.monty.items || [], 'monty', out.deleted);
+      out.sahil.items = mergeItems(local.sahil.items || [], remote.sahil.items || [], 'sahil', out.deleted);
+      return out;
+    }
+
+    let lastActivity = 0;
+    function bump() { lastActivity = Date.now(); }
+
+    async function fetchRemoteRecord() {
+      const r = await fetch(PACK_READ_URL, { cache: 'no-store', headers: PACK_HEADERS });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const body = await r.json();
+      return (body && body.record) || {};
+    }
+
+    async function pullState() {
+      if (!PACK_SYNC_ENABLED) { setSync('This device only', 'error'); return; }
+      if (editingId !== null) return; // don't sync mid-edit - we'd lose typing
+      try {
+        const record = await fetchRemoteRecord();
+        const remote = normalise(record);
+        const before = JSON.stringify(state);
+        if (remote) {
+          state = mergeState(state, remote);
+        }
+        const remoteHasData = remote && (
+          remote.shared.length > 0 ||
+          remote.monty.items.length > 0 ||
+          remote.sahil.items.length > 0 ||
+          hasDeleted(remote.deleted)
+        );
+        // If both local and remote are empty (first ever load on first device), seed defaults
+        if (!seeded && !remoteHasData) {
+          state = seedDefaults();
+          seeded = true;
+          saveLocal();
+          render();
+          pushState();
+        } else {
+          seeded = true;
+          saveLocal();
+          render();
+        }
+        if (JSON.stringify(state) !== before) bump();
+        setSync('Synced', 'ok');
+      } catch (e) {
+        setSync('Offline - this device only', 'error');
+      }
+    }
+
+    let pushTimer = null;
+    let pushing = false;
+    function pushState() {
+      if (!PACK_SYNC_ENABLED) return;
+      clearTimeout(pushTimer);
+      setSync('Saving...');
+      pushTimer = setTimeout(async () => {
+        if (pushing) { pushTimer = setTimeout(pushState, 200); return; }
+        pushing = true;
+        try {
+          try {
+            const record = await fetchRemoteRecord();
+            const remote = normalise(record);
+            if (remote) {
+              state = mergeState(state, remote);
+              saveLocal();
+              render();
+            }
+          } catch (e) {}
+          const r = await fetch(PACK_WRITE_URL, {
+            method: 'PUT',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, PACK_HEADERS),
+            body: JSON.stringify(state)
+          });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          setSync('Synced', 'ok');
+        } catch (e) {
+          setSync('Offline - this device only', 'error');
+        } finally {
+          pushing = false;
+        }
+      }, 250);
+    }
+
+    // ───── Rendering ─────
+    function nextItemState(s) {
+      if (s === 'empty') return 'packed';
+      if (s === 'packed') return 'maybe';
+      return 'empty';
+    }
+    function nextOwner(o) {
+      const cycle = ['none', 'monty', 'sahil', 'both', 'skip'];
+      const i = cycle.indexOf(o);
+      return cycle[(i + 1) % cycle.length];
+    }
+    function ownerLabel(o) {
+      if (o === 'monty') return 'Monty';
+      if (o === 'sahil') return 'Sahil';
+      if (o === 'both') return 'Both';
+      if (o === 'skip') return 'Skip';
+      return 'Who?';
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    function renderShared() {
+      if (!state.shared.length) return '';
+      const rows = state.shared.map(item => `
+        <li class="pack-item state-${item.state}" data-id="${item.id}" data-kind="shared">
+          <span class="pack-item-box" data-act="toggle">${item.state === 'packed' ? '✓' : item.state === 'maybe' ? '?' : ''}</span>
+          <span class="pack-item-text" data-act="edit">${escapeHtml(item.text)}</span>
+          <button class="pack-item-owner owner-${item.owner}" data-act="owner" title="Who brings this?">${ownerLabel(item.owner)}</button>
+          <span class="pack-item-actions">
+            <button class="pack-item-action is-edit" data-act="edit-btn" aria-label="Edit">&#9998;</button>
+            <button class="pack-item-action is-delete" data-act="delete" aria-label="Delete">&times;</button>
+          </span>
+        </li>
+      `).join('');
+      return `
+        <div class="pack-shared-block">
+          <div class="pack-shared-head">
+            <h3 class="pack-shared-title">Shared</h3>
+            <span class="pack-shared-hint">Tap the pill to set who brings each one</span>
+          </div>
+          <ul class="pack-list" data-cat="shared">${rows}
+            <li class="pack-add-row" data-cat="shared">
+              <input class="pack-add-input" placeholder="Add a shared item..." aria-label="New shared item">
+              <button class="pack-add-btn" type="button">Add</button>
+            </li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function renderCategory(catKey, catName, items) {
+      const catItems = items.filter(i => (i.cat || 'misc') === catKey);
+      const packed = catItems.filter(i => i.state === 'packed').length;
+      const rows = catItems.map(item => `
+        <li class="pack-item state-${item.state}" data-id="${item.id}" data-kind="personal">
+          <span class="pack-item-box" data-act="toggle">${item.state === 'packed' ? '✓' : item.state === 'maybe' ? '?' : ''}</span>
+          <span class="pack-item-text" data-act="edit">${escapeHtml(item.text)}</span>
+          <span class="pack-item-actions">
+            <button class="pack-item-action is-edit" data-act="edit-btn" aria-label="Edit">&#9998;</button>
+            <button class="pack-item-action is-delete" data-act="delete" aria-label="Delete">&times;</button>
+          </span>
+        </li>
+      `).join('');
+      return `
+        <section class="pack-cat" data-cat-key="${catKey}">
+          <div class="pack-cat-head">
+            <h3 class="pack-cat-title">${catName}</h3>
+            <span class="pack-cat-meta">${packed} / ${catItems.length}</span>
+          </div>
+          <ul class="pack-list" data-cat="${catKey}">${rows}
+            <li class="pack-add-row" data-cat="${catKey}">
+              <input class="pack-add-input" placeholder="Add to ${catName.toLowerCase()}..." aria-label="New ${catName} item">
+              <button class="pack-add-btn" type="button">Add</button>
+            </li>
+          </ul>
+        </section>
+      `;
+    }
+
+    function renderSummary() {
+      const items = state[active].items;
+      const personalPacked = items.filter(i => i.state === 'packed').length;
+      const sharedOwnerMine = state.shared.filter(i => i.owner === active || i.owner === 'both').length;
+      const sharedMineDone = state.shared.filter(i => (i.owner === active || i.owner === 'both') && i.state === 'packed').length;
+      const totalCount = items.length + sharedOwnerMine;
+      const doneCount = personalPacked + sharedMineDone;
+      const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+      summaryCountsEl.textContent = doneCount + ' / ' + totalCount + ' packed';
+      summaryFillEl.style.width = pct + '%';
+      summaryPctEl.textContent = pct + '%';
+    }
+
+    function render() {
+      // Don't rebuild the DOM while an inline edit input is open - it would
+      // wipe out what the user is typing and dismiss the mobile keyboard.
+      if (editingId !== null && packContent.querySelector('input.pack-item-edit-input')) {
+        renderSummary();
+        return;
+      }
+      // Body tint for active person
+      document.body.classList.toggle('pack-monty', active === 'monty');
+      document.body.classList.toggle('pack-sahil', active === 'sahil');
+
+      const items = state[active].items;
+      let html = renderShared();
+      CATS.forEach(c => { html += renderCategory(c.key, c.name, items); });
+      packContent.innerHTML = html;
+      renderSummary();
+      wireItemHandlers();
+    }
+
+    let editingId = null; // suppress re-renders that would clobber the open input
+
+    function cycleItemState(li) {
+      const id = li.dataset.id;
+      const kind = li.dataset.kind;
+      const list = kind === 'shared' ? state.shared : state[active].items;
+      const item = list.find(i => i.id === id);
+      if (!item) return;
+      item.state = nextItemState(item.state);
+      item.ts = Date.now();
+      saveLocal();
+      render();
+      bump();
+      pushState();
+      if (window.haptic) window.haptic(item.state === 'packed' ? 'success' : 'tap');
+    }
+
+    function wireItemHandlers() {
+      // Row click cycles state - EXCEPT when the click target is the text
+      // (handled by edit handler), an owner pill, a pencil/× button, or the
+      // open edit input. Tapping the checkbox or any empty area cycles.
+      const NON_TOGGLE_ACTS = new Set(['edit', 'edit-btn', 'delete', 'owner', 'edit-input']);
+      packContent.querySelectorAll('.pack-item').forEach(li => {
+        li.addEventListener('click', (e) => {
+          const act = e.target.closest('[data-act]')?.dataset.act;
+          if (act && NON_TOGGLE_ACTS.has(act)) return;
+          cycleItemState(li);
+        });
+      });
+
+      // Tap the item TEXT to edit (primary mobile-friendly path)
+      packContent.querySelectorAll('[data-act="edit"]').forEach(textEl => {
+        textEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const li = textEl.closest('.pack-item');
+          enterEditMode(textEl, li);
+        });
+      });
+
+      // Pencil button (alt path - explicit)
+      packContent.querySelectorAll('[data-act="edit-btn"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const li = btn.closest('.pack-item');
+          const text = li.querySelector('.pack-item-text');
+          enterEditMode(text, li);
+        });
+      });
+
+      // Owner pill toggle (shared only)
+      packContent.querySelectorAll('[data-act="owner"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const li = btn.closest('.pack-item');
+          const id = li.dataset.id;
+          const item = state.shared.find(i => i.id === id);
+          if (!item) return;
+          item.owner = nextOwner(item.owner);
+          item.ts = Date.now();
+          saveLocal();
+          render();
+          bump();
+          pushState();
+        });
+      });
+
+      // Delete
+      packContent.querySelectorAll('[data-act="delete"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const li = btn.closest('.pack-item');
+          const id = li.dataset.id;
+          const kind = li.dataset.kind;
+          if (!confirm('Delete this item?')) return;
+          if (kind === 'shared') {
+            const item = state.shared.find(i => i.id === id);
+            if (!item) return;
+            markDeleted(item, 'shared');
+            state.shared = filterDeletedItems(state.shared, 'shared', state.deleted);
+          } else {
+            const item = state[active].items.find(i => i.id === id);
+            if (!item) return;
+            markDeleted(item, active);
+            state[active].items = filterDeletedItems(state[active].items, active, state.deleted);
+          }
+          saveLocal();
+          render();
+          bump();
+          pushState();
+        });
+      });
+
+      // Add new item rows
+      packContent.querySelectorAll('.pack-add-row').forEach(row => {
+        const input = row.querySelector('.pack-add-input');
+        const btn = row.querySelector('.pack-add-btn');
+        const cat = row.dataset.cat;
+        const commit = () => {
+          const text = input.value.trim();
+          if (!text) return;
+          const newItem = { id: genId(), text, state: 'empty', ts: Date.now() };
+          if (cat === 'shared') {
+            newItem.owner = 'none';
+            clearDeleteMarkers(newItem, 'shared');
+            state.shared = dedupeItems([...state.shared, newItem], 'shared');
+          } else {
+            newItem.cat = cat;
+            clearDeleteMarkers(newItem, active);
+            state[active].items = dedupeItems([...state[active].items, newItem], 'personal');
+          }
+          input.value = '';
+          saveLocal();
+          render();
+          bump();
+          pushState();
+        };
+        btn.addEventListener('click', commit);
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') { e.preventDefault(); commit(); }
+        });
+      });
+    }
+
+    // Swap the text span for a real <input> - reliable mobile keyboard, native selection.
+    function enterEditMode(textEl, li) {
+      const id = li.dataset.id;
+      const kind = li.dataset.kind;
+      const list = kind === 'shared' ? state.shared : state[active].items;
+      const item = list.find(i => i.id === id);
+      if (!item) return;
+      if (editingId === id) return; // already editing this item
+      editingId = id;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'pack-item-edit-input';
+      input.value = item.text;
+      input.setAttribute('aria-label', 'Edit item text');
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('autocapitalize', 'sentences');
+      input.setAttribute('spellcheck', 'true');
+      // Keep the same data-act so the row click handler still ignores it
+      input.setAttribute('data-act', 'edit-input');
+      textEl.replaceWith(input);
+      input.focus();
+      // setSelectionRange after a tick - some mobile browsers ignore .select() inside
+      // the synchronous click handler before the keyboard appears.
+      requestAnimationFrame(() => {
+        try { input.select(); } catch (_) {}
+      });
+
+      let done = false;
+      const finish = (save) => {
+        if (done) return;
+        done = true;
+        editingId = null;
+        const newText = input.value.trim();
+        if (save && newText && newText !== item.text) {
+          item.text = newText;
+          item.ts = Date.now();
+          if (kind === 'shared') {
+            clearDeleteMarkers(item, 'shared');
+            state.shared = dedupeItems(state.shared, 'shared');
+          } else {
+            clearDeleteMarkers(item, active);
+            state[active].items = dedupeItems(state[active].items, 'personal');
+          }
+          saveLocal();
+          bump();
+          pushState();
+        }
+        // Re-render to restore the span (with new or original text)
+        render();
+      };
+
+      input.addEventListener('blur', () => finish(true));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+        else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+      });
+      // Make sure clicks inside the input don't bubble to the row toggle
+      input.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    // Tabs
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const t = tab.dataset.tab;
+        if (t === active) return;
+        active = t;
+        tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === active));
+        render();
+      });
+    });
+
+    // Reset current tab
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (!confirm('Reset ' + (active === 'monty' ? "Monty's" : "Sahil's") + ' list back to the default items? This will clear your check marks too.')) return;
+        const now = Date.now();
+        const seed = active === 'monty' ? SEED_MONTY : SEED_SAHIL;
+        state[active].items = seed.map(([t, c]) => ({ id: seedId(active, t, c), text: t, cat: c, state: 'empty', ts: now }));
+        state[active].items.forEach(item => clearDeleteMarkers(item, active));
+        saveLocal();
+        render();
+        bump();
+        pushState();
+      });
+    }
+
+    // Manual refresh
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        setSync('Syncing...');
+        bump();
+        pullState();
+      });
+    }
+
+    loadLocal();
+    render();
+    bump();
+    pullState();
+
+    let packPollTimer = null;
+    function schedulePackPoll() {
+      clearTimeout(packPollTimer);
+      const interval = (Date.now() - lastActivity < PACK_ACTIVE_WINDOW_MS) ? PACK_ACTIVE_MS : PACK_IDLE_MS;
+      packPollTimer = setTimeout(async () => {
+        if (document.visibilityState === 'visible' && !pushing) await pullState();
+        schedulePackPoll();
+      }, interval);
+    }
+    schedulePackPoll();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        bump();
+        pullState();
+        schedulePackPoll();
+      }
+    });
   }
