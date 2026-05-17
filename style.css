@@ -2307,6 +2307,7 @@
   .hero-img-bg {
     position: absolute;
     inset: 0;
+    background-image: url('img/hero/pretrip.jpg');
     background-size: cover;
     background-position: center 55%;
     background-repeat: no-repeat;
@@ -2395,12 +2396,21 @@
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   }
 
+  .hero-status-row {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 14px;
+    max-width: 980px;
+  }
+
   /* Countdown */
   .countdown {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 8px;
-    margin-bottom: 28px;
+    flex: 0 0 auto;
     padding: 20px 28px;
     background: rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(14px);
@@ -2445,38 +2455,64 @@
   .countdown.during .cd-num { color: var(--sun); }
   .countdown.post { display: none; }
 
-  /* Next moment pill */
+  /* Next moment */
   .next-moment {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    min-width: 0;
+    flex: 1 1 360px;
     gap: 14px;
-    padding: 14px 22px 14px 18px;
-    background: rgba(243, 185, 65, 0.95);
-    color: var(--ink);
-    border-radius: 100px;
+    padding: 20px 22px;
+    background:
+      linear-gradient(135deg, rgba(243, 185, 65, 0.18), rgba(255, 255, 255, 0.08)),
+      rgba(255, 255, 255, 0.10);
+    color: var(--cream);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
     text-decoration: none;
     font-weight: 500;
     font-size: 15px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   }
   .next-moment:hover {
     transform: translateY(-2px);
+    background:
+      linear-gradient(135deg, rgba(243, 185, 65, 0.26), rgba(255, 255, 255, 0.12)),
+      rgba(255, 255, 255, 0.12);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
   }
   .nm-tag {
+    flex: 0 0 auto;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    background: var(--ink);
-    color: var(--sun);
+    background: rgba(243, 185, 65, 0.95);
+    color: var(--ink);
     padding: 4px 10px;
     border-radius: 100px;
   }
-  .nm-body { color: var(--ink); }
+  .nm-body {
+    min-width: 0;
+    color: rgba(250, 243, 224, 0.94);
+    line-height: 1.35;
+  }
   .nm-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    margin-left: auto;
     font-size: 18px;
+    line-height: 1;
+    color: var(--ink);
+    background: rgba(243, 185, 65, 0.95);
+    border-radius: 50%;
     transition: transform 0.25s ease;
   }
   .next-moment:hover .nm-arrow { transform: translateX(4px); }
@@ -2488,11 +2524,48 @@
     .hero-img { min-height: 88vh; padding: 120px 0 64px; }
     .hero-img-bg { background-position: center center; }
     .hero-img-title { font-size: clamp(42px, 11vw, 64px); }
-    .countdown { padding: 16px 20px; }
-    .countdown-row { gap: 14px; }
+    .hero-status-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .countdown {
+      width: 100%;
+      padding: 16px 20px;
+    }
+    .countdown-row {
+      justify-content: space-between;
+      gap: 14px;
+    }
     .cd-num { font-size: 34px; }
     .cd-unit { min-width: 44px; }
-    .next-moment { font-size: 14px; padding: 12px 18px 12px 14px; flex-wrap: wrap; }
+    .next-moment {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 7px 14px;
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+    .nm-tag {
+      grid-column: 1;
+      justify-self: start;
+      font-size: 10px;
+      padding: 3px 9px;
+    }
+    .nm-body {
+      grid-column: 1;
+      overflow-wrap: anywhere;
+    }
+    .nm-arrow {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: center;
+      width: 34px;
+      height: 34px;
+      margin-left: 0;
+    }
   }
 
   /* ============================================================
@@ -2724,11 +2797,15 @@
   .pre-trip-panel {
     margin-top: 40px;
     padding: 22px;
-    background: rgba(250, 243, 224, 0.12);
+    max-width: 980px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(250, 243, 224, 0.04)),
+      rgba(20, 14, 8, 0.18);
     border: 1px solid rgba(250, 243, 224, 0.22);
     border-radius: 16px;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 18px 50px -28px rgba(0, 0, 0, 0.45);
   }
   .pre-trip-title {
     font-size: 11px;
@@ -2747,6 +2824,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
     padding: 14px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2764,15 +2842,35 @@
     line-height: 1;
     flex-shrink: 0;
   }
-  .pre-trip-card-body { flex: 1; min-width: 0; }
-  .pre-trip-card-title { font-weight: 600; font-size: 14px; line-height: 1.2; }
-  .pre-trip-card-sub { font-size: 11px; color: rgba(250, 243, 224, 0.7); margin-top: 2px; }
+  .pre-trip-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .pre-trip-card-title {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .pre-trip-card-sub {
+    display: block;
+    font-size: 11px;
+    line-height: 1.25;
+    color: rgba(250, 243, 224, 0.7);
+  }
   .pre-trip-card-arrow {
     font-size: 16px;
     color: rgba(250, 243, 224, 0.55);
     flex-shrink: 0;
   }
   @media (max-width: 560px) {
+    .pre-trip-panel {
+      margin-top: 28px;
+      padding: 16px;
+    }
     .pre-trip-grid { grid-template-columns: 1fr; }
   }
 

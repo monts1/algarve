@@ -21,7 +21,7 @@
   }, { capture: true });
 
   // ── App version - keep in sync with VERSION constant at top of sw.js ──
-  const APP_VERSION = 'v14';
+  const APP_VERSION = 'v16';
 
   // ── Service worker: offline support + auto-update on new deploys ────
   // When a new SW activates we reload the page automatically so users
@@ -1192,6 +1192,7 @@
         link.style.display = 'none';
         return;
       }
+      link.style.display = '';
       const m = nextMilestone(now);
       if (!m) {
         link.style.display = 'none';

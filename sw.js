@@ -1,6 +1,6 @@
 // Algarve service worker - offline support for the trip site.
 // Bump VERSION any time the precache list or runtime strategy changes.
-const VERSION = 'v14';
+const VERSION = 'v16';
 const STATIC_CACHE = `algarve-static-${VERSION}`;
 const RUNTIME_CACHE = `algarve-runtime-${VERSION}`;
 
@@ -21,7 +21,9 @@ const PRECACHE_URLS = [
   'day.html',
   'pack.html',
   'style.css',
+  'style.css?v=v16',
   'script.js',
+  'script.js?v=v16',
   'config.js',
   'venues/akvavit.html',
   'venues/atlantic-bar.html',
@@ -87,6 +89,18 @@ const API_HOSTS = [
   'api.jsonbin.io'
 ];
 
+function cacheableStaticResponse(request, response) {
+  const ct = response.headers.get('content-type') || '';
+  const dest = request.destination;
+  const mismatch =
+    (dest === 'style'  && !ct.includes('text/css')) ||
+    (dest === 'script' && !ct.includes('javascript')) ||
+    (dest === 'font'   && !ct.includes('font') && !ct.includes('octet-stream')) ||
+    (dest === 'image'  && !ct.includes('image'));
+
+  return response.ok && !mismatch && (response.type === 'basic' || response.type === 'cors');
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -116,6 +130,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // CSS/JS: network-first so a fresh HTML page never pairs with stale cached assets.
+  if (url.origin === self.location.origin && (request.destination === 'style' || request.destination === 'script')) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (cacheableStaticResponse(request, response)) {
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy));
+        }
+        return response;
+      }).catch(() => caches.match(request).then((cached) => cached || caches.match(url.origin + url.pathname)))
+    );
+    return;
+  }
+
   // Navigation requests (HTML): network-first so edits show up, cache fallback for offline.
   if (request.mode === 'navigate' || (request.destination === '' && request.headers.get('accept')?.includes('text/html'))) {
     event.respondWith(
@@ -133,16 +161,9 @@ self.addEventListener('fetch', (event) => {
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        // Don't cache if response is bad or the content-type doesn't match what was requested
-        // (catches ad-blocker / extension-injected HTML "blocked" pages being saved for CSS/JS URLs).
-        const ct = response.headers.get('content-type') || '';
-        const dest = request.destination;
-        const mismatch =
-          (dest === 'style'  && !ct.includes('text/css')) ||
-          (dest === 'script' && !ct.includes('javascript')) ||
-          (dest === 'font'   && !ct.includes('font') && !ct.includes('octet-stream')) ||
-          (dest === 'image'  && !ct.includes('image'));
-        if (response.ok && !mismatch && (response.type === 'basic' || response.type === 'cors')) {
+        // Don't cache bad responses or content-type mismatches, which catches
+        // extension-injected HTML "blocked" pages being saved as CSS/JS.
+        if (cacheableStaticResponse(request, response)) {
           const copy = response.clone();
           caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy));
         }

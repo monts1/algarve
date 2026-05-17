@@ -18,11 +18,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero/pretrip.jpg" fetchpriority="high">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="theme-color" content="#1a4870">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=v16">
 </head>
 <body>
 
@@ -44,7 +45,7 @@
 </nav>
 
 <header class="hero-img" id="top" data-phase="pretrip">
-  <div class="hero-img-bg" id="heroBg"></div>
+  <div class="hero-img-bg" id="heroBg" style="background-image: url('img/hero/pretrip.jpg');"></div>
   <div class="hero-img-tint"></div>
   <div class="wrap hero-img-content">
     <div class="hero-eyebrow">
@@ -56,20 +57,22 @@
 
     <p class="hero-img-lede">Three days in Quarteira and Vilamoura. Sea breeze, slow mornings, one calm wine evening and one big lively night. The flat is booked - the rest is just choosing the moments.</p>
 
-    <div class="countdown" id="countdown" aria-live="polite">
-      <div class="countdown-row">
-        <div class="cd-unit"><span class="cd-num" id="cdDays">-</span><span class="cd-label">days</span></div>
-        <div class="cd-unit"><span class="cd-num" id="cdHours">-</span><span class="cd-label">hours</span></div>
-        <div class="cd-unit"><span class="cd-num" id="cdMins">-</span><span class="cd-label">mins</span></div>
+    <div class="hero-status-row">
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="countdown-row">
+          <div class="cd-unit"><span class="cd-num" id="cdDays">-</span><span class="cd-label">days</span></div>
+          <div class="cd-unit"><span class="cd-num" id="cdHours">-</span><span class="cd-label">hours</span></div>
+          <div class="cd-unit"><span class="cd-num" id="cdMins">-</span><span class="cd-label">mins</span></div>
+        </div>
+        <div class="cd-caption" id="cdCaption">until the trip</div>
       </div>
-      <div class="cd-caption" id="cdCaption">until the trip</div>
-    </div>
 
-    <a class="next-moment" id="nextMoment" href="itinerary.html">
-      <span class="nm-tag">Next up</span>
-      <span class="nm-body" id="nextMomentText">Loading...</span>
-      <span class="nm-arrow">&rarr;</span>
-    </a>
+      <a class="next-moment" id="nextMoment" href="itinerary.html">
+        <span class="nm-tag">Next up</span>
+        <span class="nm-body" id="nextMomentText">Loading...</span>
+        <span class="nm-arrow">&rarr;</span>
+      </a>
+    </div>
 
     <div class="pre-trip-panel" id="preTripPanel">
       <div class="pre-trip-title">Before you go</div>
@@ -184,6 +187,6 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="script.js?v=v16"></script>
 </body>
 </html>
