@@ -1,5 +1,16 @@
 
-  // ── Nav: scroll state + active page highlight ───────────────────
+  // ── Service worker: offline support ─────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      const inVenues = window.location.pathname.includes('/venues/');
+      const swPath = inVenues ? '../sw.js' : 'sw.js';
+      const scope = inVenues ? '../' : './';
+      navigator.serviceWorker.register(swPath, { scope })
+        .catch((err) => console.warn('[sw] register failed', err));
+    });
+  }
+
+  // ── Nav: scroll state + active page highlight + mobile menu ─────
   const topNav = document.querySelector('nav.topnav');
   if (topNav) {
     window.addEventListener('scroll', () => {
@@ -11,6 +22,52 @@
       const href = a.getAttribute('href').split('/').pop();
       if (href === currentPage) a.classList.add('active');
     });
+
+    // Mobile menu: inject hamburger button + slide-down panel
+    const navInner = topNav.querySelector('.nav-inner');
+    const desktopUl = topNav.querySelector('ul');
+    if (navInner && desktopUl) {
+      const burger = document.createElement('button');
+      burger.className = 'nav-burger';
+      burger.setAttribute('aria-label', 'Menu');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.innerHTML = '<span></span><span></span><span></span>';
+      navInner.appendChild(burger);
+
+      const panel = document.createElement('div');
+      panel.className = 'nav-mobile';
+      panel.setAttribute('aria-hidden', 'true');
+      // Clone link list so we have an independent mobile copy
+      const mobileUl = desktopUl.cloneNode(true);
+      // Fix relative paths if we're in a subfolder (e.g. venues/)
+      if (window.location.pathname.includes('/venues/')) {
+        mobileUl.querySelectorAll('a').forEach(a => {
+          const href = a.getAttribute('href');
+          if (href && !href.startsWith('/') && !href.startsWith('http') && !href.startsWith('../')) {
+            a.setAttribute('href', '../' + href);
+          }
+        });
+      }
+      panel.appendChild(mobileUl);
+      topNav.appendChild(panel);
+
+      const setOpen = (open) => {
+        topNav.classList.toggle('menu-open', open);
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      };
+      burger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(!topNav.classList.contains('menu-open'));
+      });
+      panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+      document.addEventListener('click', (e) => {
+        if (topNav.classList.contains('menu-open') && !topNav.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && topNav.classList.contains('menu-open')) setOpen(false);
+      });
+    }
   }
 
   // ── Lightbox ────────────────────────────────────────────────────

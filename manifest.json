@@ -1,0 +1,19 @@
+{
+  "name": "Algarve - May 2026",
+  "short_name": "Algarve",
+  "description": "Monty & Sahil's Algarve trip, 21-24 May 2026.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf5e9",
+  "theme_color": "#1a4870",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
