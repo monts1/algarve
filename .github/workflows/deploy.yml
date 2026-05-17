@@ -19,6 +19,8 @@ jobs:
             ACCUWEATHER_KEY: '${{ secrets.ACCUWEATHER_KEY }}',
             JSONBIN_KEY: '${{ secrets.JSONBIN_KEY }}',
             JSONBIN_BIN_ID: '6a08ba47adc21f119aadbd75',
+            JSONBIN_PACKING_KEY: '${{ secrets.PACKING_KEY }}',
+            JSONBIN_PACKING_BIN_ID: '6a09debf250b1311c363b510',
             GOOGLE_MAPS_KEY: '${{ secrets.GOOGLE_API }}'
           };
           EOF

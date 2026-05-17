@@ -36,6 +36,7 @@
       <li><a href="lively.html">Lively</a></li>
       <li><a href="walks.html">Walks</a></li>
       <li><a href="eat.html">Eat</a></li>
+      <li><a href="pack.html">Pack</a></li>
       <li><a href="phrases.html">Phrases</a></li>
       <li class="nav-bingo"><a href="bingo.html">Bingo</a></li>
     </ul>
@@ -61,6 +62,12 @@
       <button class="map-chip" data-cat="walks" style="--chip: #738150">Walks <span class="chip-count" id="count-walks">0</span></button>
       <button class="map-chip" data-cat="transport" style="--chip: #564838">Travel <span class="chip-count" id="count-transport">0</span></button>
     </div>
+
+    <label class="alt-toggle" for="altToggle">
+      <input type="checkbox" id="altToggle" />
+      <span class="alt-toggle-track"><span class="alt-toggle-thumb"></span></span>
+      <span class="alt-toggle-label">Show alternatives <span class="alt-toggle-count" id="alt-toggle-count">0</span></span>
+    </label>
 
     <div class="map-shell">
       <div id="tripMap" class="map-canvas"></div>
@@ -111,25 +118,40 @@
   })();
 
   // Approximate coordinates - fine-tune by editing the values below.
+  // alt: true marks "backup / nice-to-know" venues hidden behind the alternatives toggle.
   const VENUES = [
+    // Stay
     { name: 'SunnyQuarters apartment', cat: 'stay', pos: [37.0691, -8.1031], page: 'stay.html', note: 'Where we sleep' },
+    // Calm - both primary (pick one on the night)
     { name: 'Rolha a Rolha', cat: 'calm', pos: [37.0688, -8.1009], page: 'venues/rolha-a-rolha.html', note: 'Wine tasting · Quarteira' },
     { name: 'Oporto Tavern', cat: 'calm', pos: [37.0758, -8.1175], page: 'venues/oporto-tavern.html', note: 'Wine & port · marina' },
+    // Lively - primary
     { name: 'Atlantic Bar', cat: 'lively', pos: [37.0750, -8.1170], page: 'venues/atlantic-bar.html', note: 'Marina go-to' },
-    { name: 'Kadoc', cat: 'lively', pos: [37.1308, -8.1308], page: 'venues/kadoc.html', note: 'Mega club · 15 min taxi' },
-    { name: "Cat's Bar", cat: 'lively', pos: [37.0752, -8.1180], page: 'venues/cats-bar.html', note: 'Marina dive' },
-    { name: "O'Neills", cat: 'lively', pos: [37.0768, -8.1190], page: 'venues/oneills.html', note: 'Irish pub' },
     { name: 'Boat party', cat: 'lively', pos: [37.0748, -8.1178], page: 'venues/boat-party.html', note: 'Departs marina' },
-    { name: 'Salmora', cat: 'eat', pos: [37.0790, -8.1185], page: 'venues/salmora.html', note: 'Live kitchen' },
-    { name: 'Akvavit', cat: 'eat', pos: [37.0780, -8.1180], page: 'venues/akvavit.html', note: 'Scandi-Portuguese' },
-    { name: 'Casa do Pescador', cat: 'eat', pos: [37.0785, -8.1190], page: 'venues/casa-do-pescador.html', note: 'Seafood' },
-    { name: 'Tico Tico', cat: 'eat', pos: [37.0688, -8.1040], page: 'venues/tico-tico.html', note: 'Quarteira backstreet' },
-    { name: "Sailor's Corner", cat: 'eat', pos: [37.0680, -8.1030], page: 'venues/sailors-corner.html', note: 'Quarteira' },
-    { name: 'Motão', cat: 'eat', pos: [37.0782, -8.1175], page: 'venues/motao.html', note: 'Marina dinner' },
+    { name: 'Kadoc', cat: 'lively', pos: [37.1308, -8.1308], page: 'venues/kadoc.html', note: 'Mega club · 15 min taxi' },
+    // Lively - alternatives (bar-hop)
+    { name: "Cat's Bar", cat: 'lively', alt: true, pos: [37.0752, -8.1180], page: 'venues/cats-bar.html', note: 'Bar-hop alt · marina' },
+    { name: "O'Neills", cat: 'lively', alt: true, pos: [37.0768, -8.1190], page: 'venues/oneills.html', note: 'Bar-hop alt · Irish pub' },
+    { name: 'Motão', cat: 'lively', alt: true, pos: [37.0782, -8.1175], page: 'venues/motao.html', note: 'Bar-hop alt · trendy' },
+    // Eat - primary
+    { name: 'Tico Tico', cat: 'eat', pos: [37.0688, -8.1040], page: 'venues/tico-tico.html', note: 'Thu dinner · Quarteira backstreet' },
+    { name: 'Casa do Pescador', cat: 'eat', pos: [37.0785, -8.1190], page: 'venues/casa-do-pescador.html', note: 'Fri dinner · seafood' },
+    { name: 'Salmora', cat: 'eat', pos: [37.0790, -8.1185], page: 'venues/salmora.html', note: 'Sat dinner · live kitchen' },
+    { name: "Sailor's Corner", cat: 'eat', pos: [37.0680, -8.1030], page: 'venues/sailors-corner.html', note: 'Lunch · Quarteira seafront' },
+    { name: "Snack-bar Monteiro's", cat: 'eat', pos: [37.0772, -8.1188], page: null, note: 'Fri marina lunch' },
+    // Eat - alternatives
+    { name: 'Akvavit', cat: 'eat', alt: true, pos: [37.0780, -8.1180], page: 'venues/akvavit.html', note: 'Alt · Scandi-Portuguese marina' },
+    { name: 'Ramires', cat: 'eat', alt: true, pos: [37.2156, -8.2697], page: 'venues/ramires.html', note: 'Alt · piri-piri · 12 min taxi to Guia' },
+    { name: 'A Tasca', cat: 'eat', alt: true, pos: [37.0695, -8.1051], page: 'venues/a-tasca.html', note: 'Alt · backstreet traditional' },
+    { name: 'Marisqueira Sol e Mar', cat: 'eat', alt: true, pos: [37.0690, -8.1024], page: null, note: 'Alt · fish by the kilo' },
+    // Walks - primary
     { name: 'Praia da Falésia', cat: 'walks', pos: [37.0780, -8.1300], page: 'venues/falesia.html', note: 'Cliff walk' },
     { name: 'Cerro da Vila', cat: 'walks', pos: [37.0794, -8.1271], page: 'venues/cerro-da-vila.html', note: 'Roman ruins' },
     { name: 'Calçadão', cat: 'walks', pos: [37.0670, -8.1030], page: 'venues/calcadao.html', note: 'Quarteira promenade' },
     { name: 'Loulé Market', cat: 'walks', pos: [37.1389, -8.0224], page: 'venues/loule-market.html', note: 'Sat morning market' },
+    // Walks - alternatives
+    { name: 'Praia do Forte Novo', cat: 'walks', alt: true, pos: [37.0640, -8.0950], page: 'venues/forte-novo.html', note: 'Alt · quieter beach · 5 min west' },
+    // Travel
     { name: 'Faro Airport', cat: 'transport', pos: [37.0144, -7.9659], page: null, note: 'Arrival / departure' }
   ];
 
@@ -142,32 +164,50 @@
     transport: '#564838'
   };
 
-  // Count venues per category for chips
-  ['all','stay','calm','lively','eat','walks','transport'].forEach(c => {
-    const el = document.getElementById('count-' + c);
-    if (el) el.textContent = c === 'all' ? VENUES.length : VENUES.filter(v => v.cat === c).length;
-  });
+  // State first - referenced by counters & filters
+  let currentFilter = 'all';
+  let showAlts = false;
+
+  function visibleVenues() {
+    return VENUES.filter(v => {
+      if (!showAlts && v.alt) return false;
+      if (currentFilter !== 'all' && v.cat !== currentFilter) return false;
+      return true;
+    });
+  }
+
+  // Count venues per category for chips (counts respect the alts toggle)
+  function refreshCounts() {
+    const pool = VENUES.filter(v => showAlts || !v.alt);
+    ['all','stay','calm','lively','eat','walks','transport'].forEach(c => {
+      const el = document.getElementById('count-' + c);
+      if (el) el.textContent = c === 'all' ? pool.length : pool.filter(v => v.cat === c).length;
+    });
+    const altCount = VENUES.filter(v => v.alt).length;
+    const ac = document.getElementById('alt-toggle-count');
+    if (ac) ac.textContent = altCount;
+  }
+  refreshCounts();
 
   // Render text list (works even if map fails to load)
   const mapList = document.getElementById('mapList');
-  function renderList(filter) {
-    const filtered = filter === 'all' ? VENUES : VENUES.filter(v => v.cat === filter);
+  function renderList() {
+    const filtered = visibleVenues();
     mapList.innerHTML = filtered.map(v => `
-      <div class="map-list-row" data-cat="${v.cat}">
-        <span class="mlr-dot" style="background:${CAT_COLOR[v.cat]}"></span>
+      <div class="map-list-row${v.alt ? ' is-alt' : ''}" data-cat="${v.cat}">
+        <span class="mlr-dot${v.alt ? ' is-alt' : ''}" style="${v.alt ? '--ring:' + CAT_COLOR[v.cat] : 'background:' + CAT_COLOR[v.cat]}"></span>
         <div class="mlr-body">
-          <div class="mlr-name">${v.page ? `<a href="${v.page}">${v.name}</a>` : v.name}</div>
+          <div class="mlr-name">${v.page ? `<a href="${v.page}">${v.name}</a>` : v.name}${v.alt ? ' <span class="mlr-alt-tag">alt</span>' : ''}</div>
           <div class="mlr-note">${v.note}</div>
         </div>
         <a class="mlr-dir" href="https://www.google.com/maps/dir/?api=1&destination=${v.pos[0]},${v.pos[1]}" target="_blank" rel="noopener" aria-label="Directions to ${v.name}">&#10138;</a>
       </div>
     `).join('');
   }
-  renderList('all');
+  renderList();
 
   // Map state
   let map, markers = [];
-  let currentFilter = 'all';
 
   // Photo cache: in-memory map of venue name -> url string, null (no photo), or undefined (not fetched).
   // Backed by localStorage so we don't re-hit the Places API every page load.
@@ -266,20 +306,22 @@
     const info = new google.maps.InfoWindow();
 
     VENUES.forEach(v => {
+      const color = CAT_COLOR[v.cat];
       const marker = new google.maps.Marker({
         position: { lat: v.pos[0], lng: v.pos[1] },
         map,
-        title: v.name,
+        title: v.name + (v.alt ? ' (alt)' : ''),
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
-          fillColor: CAT_COLOR[v.cat],
-          fillOpacity: 1,
-          strokeColor: '#fff',
-          strokeWeight: 3,
+          fillColor: v.alt ? '#ffffff' : color,
+          fillOpacity: v.alt ? 0.95 : 1,
+          strokeColor: v.alt ? color : '#fff',
+          strokeWeight: v.alt ? 4 : 3,
           scale: v.cat === 'stay' || v.cat === 'transport' ? 11 : 9
         }
       });
       marker._cat = v.cat;
+      marker._alt = !!v.alt;
       marker.addListener('click', () => {
         const photoUrl = photoCache[v.name];
         renderInfo(info, v, photoUrl);
@@ -297,6 +339,9 @@
       bounds.extend(marker.getPosition());
     });
 
+    // Apply current filter state to fresh markers (alts off by default)
+    applyMapFilter();
+
     // Fit to bounds but cap zoom so we don't end up zoomed in on a tight cluster
     map.fitBounds(bounds, 60);
     google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
@@ -307,18 +352,36 @@
     prefetchPhotos();
   };
 
+  function applyMapFilter() {
+    if (!markers.length) return;
+    markers.forEach(m => {
+      const catOk = currentFilter === 'all' || m._cat === currentFilter;
+      const altOk = showAlts || !m._alt;
+      m.setMap(catOk && altOk ? map : null);
+    });
+  }
+
   // Category filter
   document.querySelectorAll('.map-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.map-chip').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentFilter = btn.dataset.cat;
-      renderList(currentFilter);
-      if (markers.length) {
-        markers.forEach(m => m.setMap(currentFilter === 'all' || m._cat === currentFilter ? map : null));
-      }
+      renderList();
+      applyMapFilter();
     });
   });
+
+  // Alternatives toggle
+  const altToggle = document.getElementById('altToggle');
+  if (altToggle) {
+    altToggle.addEventListener('change', () => {
+      showAlts = altToggle.checked;
+      refreshCounts();
+      renderList();
+      applyMapFilter();
+    });
+  }
 
 </script>
 </body>
