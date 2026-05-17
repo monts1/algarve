@@ -2180,6 +2180,31 @@
     margin-top: 28px;
   }
 
+  @media (max-width: 600px) {
+    .bingo-header { gap: 4px; margin-bottom: 4px; }
+    .bingo-letter { font-size: 20px; padding: 4px 0; }
+    .bingo-board { gap: 4px; }
+    .bingo-cell {
+      font-size: 9px;
+      line-height: 1.2;
+      padding: 4px 3px;
+      border-radius: 8px;
+    }
+    .bingo-cell.free { font-size: 10px; }
+    .bingo-win-banner { padding: 28px 20px; margin-top: 24px; }
+    .bingo-win-banner h2 { font-size: 40px; }
+    .bingo-win-banner p { font-size: 14px; }
+    .bingo-controls { flex-wrap: wrap; }
+  }
+
+  @media (max-width: 380px) {
+    .bingo-header { gap: 3px; }
+    .bingo-letter { font-size: 17px; }
+    .bingo-board { gap: 3px; }
+    .bingo-cell { font-size: 8px; padding: 3px 2px; border-radius: 6px; }
+    .bingo-cell.free { font-size: 9px; }
+  }
+
   /* ============================================================
      Homepage hero (image-led, phase-adaptive)
      ============================================================ */
