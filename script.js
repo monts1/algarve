@@ -445,7 +445,7 @@
   // ── Translator ──────────────────────────────────────────────────
   const srcText = document.getElementById('srcText');
   if (srcText) {
-    let srcLang = 'en', dstLang = 'pt';
+    let srcLang = 'en', dstLang = 'pt-PT';
     const dstText = document.getElementById('dstText');
     const srcLabel = document.getElementById('srcLabel');
     const dstLabel = document.getElementById('dstLabel');
