@@ -21,7 +21,7 @@
   }, { capture: true });
 
   // ── App version - keep in sync with VERSION constant at top of sw.js ──
-  const APP_VERSION = 'v20';
+  const APP_VERSION = 'v21';
 
   // ── Service worker: offline support + auto-update on new deploys ────
   // When a new SW activates we reload the page automatically so users
